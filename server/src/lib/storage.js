@@ -84,9 +84,12 @@ async function removeCloudinary(publicId) {
 // ---------- Driver Vercel Blob ----------
 
 async function saveVercelBlob(buffer, ext, mimetype) {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  const hasCredentials =
+    process.env.BLOB_READ_WRITE_TOKEN ||
+    (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN);
+  if (!hasCredentials) {
     throw ApiError.internal(
-      'STORAGE_DRIVER=vercel-blob tetapi BLOB_READ_WRITE_TOKEN belum diisi'
+      'STORAGE_DRIVER=vercel-blob tetapi kredensial Vercel Blob belum tersedia'
     );
   }
   const { put } = require('@vercel/blob');
@@ -102,7 +105,7 @@ async function saveVercelBlob(buffer, ext, mimetype) {
 async function removeVercelBlob(url) {
   try {
     const { del } = require('@vercel/blob');
-    await del(url, { token: process.env.BLOB_READ_WRITE_TOKEN });
+    await del(url);
   } catch (err) {
     console.warn('[storage] gagal menghapus gambar vercel blob:', url, err.message);
   }

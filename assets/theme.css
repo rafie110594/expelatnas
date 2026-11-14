@@ -1,0 +1,163 @@
+/* ============================================================
+   Tema warna PB EX PELATNAS
+   Mengikuti palet logo asli:
+     biru tua #021C97, oranye #FC6703, putih #F7F7F7
+   ============================================================ */
+
+:root {
+  --pb-blue-950: #050f38;
+  --pb-blue-900: #06154f;
+  --pb-blue-800: #0a1f6e;
+  --pb-blue-700: #021c97;
+  --pb-blue-500: #1f43c9;
+  --pb-blue-100: #e6ebff;
+  --pb-orange-700: #d15200;
+  --pb-orange-600: #fc6703;
+  --pb-orange-500: #ff7d1f;
+  --pb-orange-300: #ffb37a;
+  --pb-orange-100: #ffe9d8;
+}
+
+/* Latar halaman: putih dengan semburat biru & oranye */
+body.pb-bg {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(900px 520px at 6% -8%, rgba(2, 28, 151, 0.13), transparent 60%),
+    radial-gradient(900px 520px at 102% -4%, rgba(252, 103, 3, 0.15), transparent 58%),
+    linear-gradient(180deg, #ffffff 0%, #f4f6ff 46%, #fff4ea 100%);
+  background-attachment: fixed;
+}
+
+/* Hero utama: biru tua -> biru logo -> oranye logo */
+.pb-hero {
+  background-image: linear-gradient(118deg, #050f38 0%, #021c97 48%, #fc6703 100%);
+}
+.pb-hero-soft {
+  background-image: linear-gradient(135deg, #0a1f6e 0%, #021c97 42%, #fc6703 100%);
+}
+/* Poster / kartu CTA */
+.pb-poster {
+  background-image: linear-gradient(135deg, #021c97 0%, #1f43c9 42%, #fc6703 100%);
+}
+.pb-cta {
+  background-image: linear-gradient(110deg, #021c97 0%, #1231b8 48%, #fc6703 100%);
+}
+/* Latar halaman admin login */
+.pb-auth-bg {
+  background-image:
+    radial-gradient(1000px 620px at 82% 6%, rgba(252, 103, 3, 0.5), transparent 56%),
+    radial-gradient(900px 600px at 8% 96%, rgba(31, 67, 201, 0.6), transparent 56%),
+    linear-gradient(135deg, #050f38 0%, #021c97 58%, #fc6703 100%);
+}
+
+/* Teks gradasi biru -> oranye */
+.pb-title-grad {
+  background-image: linear-gradient(90deg, #021c97, #fc6703);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Garis aksen gradasi (header / pemisah) */
+.pb-accent-line {
+  background-image: linear-gradient(90deg, #021c97, #1f43c9 45%, #fc6703);
+}
+
+/* Chip / badge oranye */
+.pb-chip-orange {
+  background-color: #fff2e6;
+  border: 1px solid #ffd0ab;
+  color: #c2410c;
+}
+
+/* Tombol utama gradasi biru -> oranye */
+.pb-btn {
+  background-image: linear-gradient(110deg, #021c97 0%, #1231b8 55%, #fc6703 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 22px -12px rgba(2, 28, 151, 0.6);
+}
+.pb-btn:hover { filter: brightness(1.08); }
+.pb-btn:disabled { opacity: .6; filter: none; }
+
+/* Kartu dengan garis aksen gradasi di atas */
+.pb-card-accent {
+  position: relative;
+  overflow: hidden;
+}
+.pb-card-accent::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background-image: linear-gradient(90deg, #021c97, #1f43c9 45%, #fc6703);
+}
+
+/* ---------- Grafik ---------- */
+.pb-bar-track {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background-color: #eef1ff;
+  overflow: hidden;
+}
+.pb-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background-image: linear-gradient(90deg, #021c97 0%, #1f43c9 55%, #fc6703 100%);
+  transition: width .6s ease;
+}
+.pb-bar-row:hover .pb-bar-track {
+  background-color: #e0e5ff;
+}
+
+/* Bagan komposisi tier (stacked bar) */
+.pb-stack {
+  display: flex;
+  height: 14px;
+  border-radius: 999px;
+  overflow: hidden;
+  background-color: #f1f5f9;
+}
+.pb-stack > span {
+  display: block;
+  height: 100%;
+  transition: width .6s ease;
+}
+.pb-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* Donut ringkas pakai conic-gradient (diisi lewat inline style) */
+.pb-donut {
+  width: 148px;
+  height: 148px;
+  border-radius: 999px;
+  position: relative;
+  background: conic-gradient(#e2e8f0 0 100%);
+}
+.pb-donut::after {
+  content: '';
+  position: absolute;
+  inset: 22px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+.pb-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+}
+
+/* Sembunyikan pola kotak-kotak lama */
+.hero-grid,
+.grid-bg {
+  display: none !important;
+}

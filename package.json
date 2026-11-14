@@ -1,0 +1,31 @@
+{
+  "name": "pb-expelatnas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Website + API PB EX PELATNAS (deploy Vercel)",
+  "scripts": {
+    "postinstall": "prisma generate --schema=server/prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.10.0",
+    "@vercel/blob": "^2.9.0",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.11.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.10.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

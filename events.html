@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a56db" />
+  <title>Event - PB EX PELATNAS</title>
+  <link rel="icon" href="assets/logo-round.png" type="image/png" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" crossorigin rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/theme.css" />
+  <link rel="stylesheet" href="assets/splash.css" />
+  <style>
+    html, body { background: #f5f8ff; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/ui.js"></script>
+</head>
+<body class="pb-bg min-h-screen flex flex-col antialiased">
+  <div id="pbSplash" class="pb-splash" role="status" aria-live="polite" aria-label="Memuat situs PB EX PELATNAS"></div>
+  <script src="assets/splash.js"></script>
+
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-blue-100">
+    <div class="h-1 w-full pb-accent-line"></div>
+    <div class="max-w-6xl mx-auto h-16 px-4 flex items-center justify-between gap-3">
+      <a href="index.html" class="flex items-center gap-2.5 min-w-0">
+        <img src="assets/logo-round.png" alt="Logo PB Ex Pelatnas" class="h-10 w-10 rounded-full shadow-lg shadow-blue-600/20" />
+        <span class="leading-tight min-w-0">
+          <span class="block font-display text-[15px] font-bold tracking-tight text-slate-900 truncate">PB EX PELATNAS</span>
+          <span class="block text-[10px] font-extrabold uppercase tracking-[0.18em] text-blue-600">Agenda Club</span>
+        </span>
+      </a>
+      <nav class="hidden md:flex items-center gap-1 text-[12px] font-bold">
+        <a href="index.html" class="px-3.5 py-2 rounded-full text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors">Home</a>
+        <a href="leaderboard.html" class="px-3.5 py-2 rounded-full text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors">Ranking</a>
+        <a href="events.html" class="px-3.5 py-2 rounded-full bg-orange-50 text-orange-700">Event</a>
+      </nav>
+      <div class="hidden md:flex items-center gap-2" id="authNav">
+        <a href="member-login.html" class="px-3.5 py-2 rounded-full text-[12px] font-bold text-slate-600 hover:bg-slate-50 transition-colors">Masuk</a>
+        <a href="member-register.html" class="px-4 py-2 rounded-full text-[12px] font-bold pb-btn transition-colors">Daftar</a>
+      </div>
+
+      <button type="button" id="mobileMenuBtn" class="md:hidden h-10 w-10 rounded-full border border-blue-100 bg-white text-slate-700 grid place-items-center shadow-sm" aria-label="Buka menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobileMenu">
+        <span class="material-symbols-outlined text-[22px]">menu</span>
+      </button>
+    </div>
+
+    <div id="mobileMenu" class="md:hidden hidden absolute inset-x-0 top-full border-t border-blue-100 bg-white shadow-xl shadow-blue-900/10 max-h-[calc(100vh-4.5rem)] overflow-y-auto" aria-hidden="true">
+      <nav class="max-w-6xl mx-auto px-3 pt-3 pb-2 grid gap-1 text-[13px] font-bold" aria-label="Menu utama">
+        <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+          <span class="material-symbols-outlined text-[20px]">home</span>Home
+        </a>
+        <a href="leaderboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+          <span class="material-symbols-outlined text-[20px]">leaderboard</span>Ranking
+        </a>
+        <a href="events.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-orange-50 text-orange-700">
+          <span class="material-symbols-outlined text-[20px]">event</span>Event
+        </a>
+      </nav>
+      <div class="max-w-6xl mx-auto px-3 pb-3">
+        <div class="border-t border-blue-100/80 pt-2">
+          <div id="mobileAuthNav" class="grid gap-1 text-[13px] font-bold">
+            <a href="member-login.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <span class="material-symbols-outlined text-[20px]">login</span>Masuk
+            </a>
+            <a href="member-register.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl pb-btn">
+              <span class="material-symbols-outlined text-[20px]">person_add</span>Daftar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <section class="pb-hero text-white">
+      <div class="max-w-6xl mx-auto px-4 pt-10 pb-12 md:pt-14 md:pb-16">
+        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-orange-300">Agenda klub</p>
+        <h1 class="font-display text-3xl md:text-5xl font-bold tracking-tight mt-2">Event &amp; latihan</h1>
+        <p class="mt-3 max-w-2xl text-[13px] md:text-[14px] leading-relaxed text-blue-100">Jadwal latihan gabungan, turnamen internal, dan kegiatan resmi PB EX PELATNAS.</p>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-4 -mt-6 relative z-10">
+      <div class="rounded-2xl border border-blue-100 bg-white p-2 shadow-xl shadow-blue-900/5 inline-flex items-center gap-1">
+        <button type="button" data-time="upcoming" class="tab-btn px-4 py-2 rounded-xl text-[11px] font-bold pb-btn text-white">Akan datang</button>
+        <button type="button" data-time="past" class="tab-btn px-4 py-2 rounded-xl text-[11px] font-bold text-slate-500 hover:bg-slate-50">Sudah lewat</button>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-4 py-8">
+      <div id="eventList" class="grid md:grid-cols-2 gap-4">
+        <div class="h-64 rounded-2xl bg-white border border-blue-100 animate-pulse md:col-span-2"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-blue-100 bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <img src="assets/logo-round.png" alt="" class="h-8 w-8 rounded-full" />
+        <div>
+          <p class="font-display text-[13px] font-bold">PB EX PELATNAS</p>
+          <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Agenda Club</p>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-400">Jadwal dapat berubah. Ikuti informasi terbaru dari pengurus.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+      var esc = PBUI.escapeHtml;
+      var time = 'upcoming';
+
+      function initials(name) {
+        var parts = String(name || '?').trim().split(/\s+/);
+        return ((parts[0] || '?')[0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+      }
+
+      function renderAuthNav(user) {
+        PBUI.renderMobileAuth(user);
+        var el = document.getElementById('authNav');
+        if (!user) return;
+        var dash = user.role === 'ADMIN' ? 'admin.html' : 'member.html';
+        el.innerHTML =
+          '<a href="' + dash + '" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-full text-[12px] font-bold text-slate-600 hover:bg-slate-50 transition-colors"><span class="material-symbols-outlined text-[18px]">dashboard</span>' + (user.role === 'ADMIN' ? 'Admin' : 'Dashboard') + '</a>' +
+          '<a href="' + dash + '" class="h-9 w-9 rounded-full bg-blue-100 text-blue-700 grid place-items-center font-bold text-[11px] ring-2 ring-white shadow-sm" title="' + esc(user.fullName) + '">' + esc(initials(user.fullName)) + '</a>';
+      }
+      Session.init().then(renderAuthNav).catch(function () {});
+
+      function eventCard(ev) {
+        var media = ev.imageUrl
+          ? '<img src="' + esc(ev.imageUrl) + '" alt="" class="h-48 w-full object-cover" />'
+          : '<div class="h-48 w-full pb-poster grid place-items-center relative overflow-hidden"><span class="material-symbols-outlined text-white/85 text-6xl relative">sports_tennis</span></div>';
+        var dateLabel = PBUI.fmtDate(ev.startAt, true);
+        return '<article class="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col">' +
+          '<div class="relative">' + media +
+          '<span class="absolute left-3 top-3 px-2.5 py-1 rounded-lg bg-white/95 text-blue-700 text-[10px] font-extrabold uppercase tracking-wider shadow-sm">' + (time === 'past' ? 'Selesai' : 'Mendatang') + '</span>' +
+          '</div>' +
+          '<div class="p-4 md:p-5 flex-1 flex flex-col">' +
+          '<p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">' + esc(dateLabel) + '</p>' +
+          '<h2 class="mt-1.5 font-display text-[18px] font-bold leading-snug">' + esc(ev.title) + '</h2>' +
+          (ev.location ? '<p class="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-slate-500"><span class="material-symbols-outlined text-[16px]">location_on</span>' + esc(ev.location) + '</p>' : '') +
+          (ev.description ? '<p class="mt-2 text-[12px] leading-relaxed text-slate-500 line-clamp-3">' + esc(ev.description) + '</p>' : '') +
+          (ev.endAt ? '<p class="mt-auto pt-3 text-[10px] font-semibold text-slate-400">Berakhir: ' + esc(PBUI.fmtDate(ev.endAt, true)) + '</p>' : '') +
+          '</div></article>';
+      }
+
+      function loadEvents() {
+        var box = document.getElementById('eventList');
+        PBUI.setLoading(box, 'Memuat agenda...');
+        api.get('/events?limit=100&time=' + time).then(function (data) {
+          var items = (data && data.items) || [];
+          if (!items.length) {
+            PBUI.showEmpty(box, time === 'upcoming' ? 'Belum ada agenda mendatang' : 'Belum ada agenda yang lewat', 'event');
+            return;
+          }
+          box.innerHTML = items.map(eventCard).join('');
+        }).catch(function (e) {
+          PBUI.showError(box, e && e.message, loadEvents);
+        });
+      }
+
+      document.querySelectorAll('.tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          time = btn.getAttribute('data-time');
+          document.querySelectorAll('.tab-btn').forEach(function (b) {
+            b.className = 'tab-btn px-4 py-2 rounded-xl text-[11px] font-bold text-slate-500 hover:bg-slate-50';
+          });
+          btn.className = 'tab-btn px-4 py-2 rounded-xl text-[11px] font-bold pb-btn text-white';
+          loadEvents();
+        });
+      });
+
+      loadEvents();
+    })();
+  </script>
+</body>
+</html>

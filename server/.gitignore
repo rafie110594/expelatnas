@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Environment (jangan pernah commit)
+.env
+.env.local
+
+# File hasil upload gambar
+uploads/
+
+# Log & artefak
+*.log
+dist/

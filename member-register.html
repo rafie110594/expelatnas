@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a56db" />
+  <title>Daftar Anggota - PB EX PELATNAS</title>
+  <link rel="icon" href="assets/logo-round.png" type="image/png" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" crossorigin rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/theme.css" />
+  <link rel="stylesheet" href="assets/splash.css" />
+  <style>
+    html, body { background: #f5f8ff; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+  </style>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/ui.js"></script>
+</head>
+<body class="pb-bg min-h-screen flex flex-col antialiased">
+  <div id="pbSplash" class="pb-splash" role="status" aria-live="polite" aria-label="Memuat situs PB EX PELATNAS"></div>
+  <script src="assets/splash.js"></script>
+
+  <header class="border-b border-blue-100 bg-white/90 backdrop-blur-xl">
+    <div class="h-1 w-full pb-accent-line"></div>
+    <div class="max-w-6xl mx-auto h-16 px-4 flex items-center justify-between gap-3">
+      <a href="index.html" class="flex items-center gap-2.5 min-w-0">
+        <img src="assets/logo-round.png" alt="Logo PB Ex Pelatnas" class="h-10 w-10 rounded-full shadow-lg shadow-blue-600/20" />
+        <span class="leading-tight min-w-0">
+          <span class="block font-display text-[15px] font-bold tracking-tight text-slate-900 truncate">PB EX PELATNAS</span>
+          <span class="block text-[10px] font-extrabold uppercase tracking-[0.18em] text-blue-600">Pendaftaran Anggota</span>
+        </span>
+      </a>
+      <a href="member-login.html" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-bold text-blue-600 hover:bg-blue-50"><span class="material-symbols-outlined text-[17px]">login</span>Sudah punya akun?</a>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-8 grid lg:grid-cols-[.9fr_1.1fr] gap-6 items-start">
+    <aside class="hidden lg:block sticky top-24 rounded-3xl overflow-hidden pb-hero text-white p-7 shadow-2xl shadow-blue-900/20">
+      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] font-bold uppercase tracking-widest">
+        <span class="h-1.5 w-1.5 rounded-full bg-orange-300"></span>Gabung klub
+      </span>
+      <h1 class="font-display text-3xl font-bold tracking-tight leading-tight mt-5">Mulai perjalananmu<br /><span class="text-orange-300">di papan peringkat.</span></h1>
+      <p class="mt-3 text-[12px] leading-relaxed text-blue-100">Lengkapi data diri dan profil olahraga. Setelah terdaftar, pengurus akan mencatat pertandingan resmi pertamamu.</p>
+      <div class="mt-7 space-y-3">
+        <div class="flex items-start gap-3 rounded-2xl bg-white/10 border border-white/15 p-3.5"><span class="h-9 w-9 rounded-xl bg-white/15 grid place-items-center shrink-0"><span class="material-symbols-outlined text-[19px]">person_add</span></span><div><p class="text-[12px] font-bold">Akun anggota resmi</p><p class="text-[11px] text-blue-100 mt-0.5">Nomor anggota dibuat otomatis.</p></div></div>
+        <div class="flex items-start gap-3 rounded-2xl bg-white/10 border border-white/15 p-3.5"><span class="h-9 w-9 rounded-xl bg-white/15 grid place-items-center shrink-0"><span class="material-symbols-outlined text-[19px]">military_tech</span></span><div><p class="text-[12px] font-bold">Ranking dari performa</p><p class="text-[11px] text-blue-100 mt-0.5">Poin dihitung dari hasil pertandingan.</p></div></div>
+        <div class="flex items-start gap-3 rounded-2xl bg-white/10 border border-white/15 p-3.5"><span class="h-9 w-9 rounded-xl bg-white/15 grid place-items-center shrink-0"><span class="material-symbols-outlined text-[19px]">calendar_month</span></span><div><p class="text-[12px] font-bold">Agenda &amp; latihan</p><p class="text-[11px] text-blue-100 mt-0.5">Ikuti kegiatan resmi klub.</p></div></div>
+      </div>
+      <div class="mt-7 flex flex-wrap gap-2 text-[10px] font-bold">
+        <span class="px-2.5 py-1 rounded-lg bg-emerald-400/15 border border-emerald-300/30 text-emerald-100">Menang +3</span>
+        <span class="px-2.5 py-1 rounded-lg bg-rose-400/15 border border-rose-300/30 text-rose-100">Kalah -2</span>
+        <span class="px-2.5 py-1 rounded-lg bg-white/10 border border-white/20">Tier D - A</span>
+      </div>
+    </aside>
+
+    <section>
+      <div class="lg:hidden mb-5">
+        <h1 class="font-display text-2xl font-bold tracking-tight">Daftar anggota</h1>
+        <p class="text-[12px] text-slate-500 mt-1">Lengkapi data untuk membuat akun klub.</p>
+      </div>
+
+      <div id="regClosedNotice" class="hidden mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+        <p class="text-[12px] font-bold text-amber-900">Pendaftaran ditutup</p>
+        <p class="text-[11px] text-amber-800 mt-0.5">Pendaftaran anggota baru sedang ditutup oleh pengurus. Silakan hubungi sekretariat klub.</p>
+      </div>
+
+      <form id="registerForm" class="rounded-3xl border border-blue-100 bg-white p-5 sm:p-7 shadow-xl shadow-blue-900/5 space-y-6">
+        <div class="flex items-center gap-4">
+          <div class="relative shrink-0">
+            <span id="avatarFallback" class="h-16 w-16 rounded-2xl bg-blue-100 text-blue-700 grid place-items-center font-display text-xl font-bold">PB</span>
+            <img id="avatarPreview" alt="" class="hidden h-16 w-16 rounded-2xl object-cover border-2 border-blue-200" />
+            <label for="avatarInput" class="absolute -bottom-1 -right-1 h-7 w-7 rounded-full pb-btn grid place-items-center cursor-pointer shadow-md"><span class="material-symbols-outlined text-[15px]">photo_camera</span></label>
+            <input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+          </div>
+          <div>
+            <p class="text-[12px] font-bold">Foto profil <span class="text-slate-400 font-medium">(opsional)</span></p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Maksimal 5 MB. JPG, PNG, WEBP, atau GIF.</p>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-blue-600">Data akun</h2>
+          <div class="mt-3 grid sm:grid-cols-2 gap-3.5">
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nama lengkap</label>
+              <input id="fullName" type="text" maxlength="120" required placeholder="Nama sesuai identitas" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Email</label>
+              <input id="email" type="email" required placeholder="nama@email.com" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nomor telepon</label>
+              <input id="phone" type="tel" maxlength="20" placeholder="08xxxxxxxxxx" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Kata sandi</label>
+              <input id="password" type="password" minlength="8" maxlength="72" required placeholder="Minimal 8 karakter" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+              <div class="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden"><div id="strengthBar" class="h-full w-0 bg-rose-400 transition-all"></div></div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Konfirmasi sandi</label>
+              <input id="confirmPassword" type="password" minlength="8" maxlength="72" required placeholder="Ulangi kata sandi" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-1">
+          <h2 class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-blue-600">Profil olahraga</h2>
+          <div class="mt-3 grid sm:grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Gender</label>
+              <select id="gender" required class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
+                <option value="">Pilih gender</option>
+                <option value="LAKI_LAKI">Laki-laki</option>
+                <option value="PEREMPUAN">Perempuan</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tanggal lahir</label>
+              <input id="birthDate" type="date" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tangan dominan</label>
+              <select id="dominantHand" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
+                <option value="">Pilih</option>
+                <option value="kanan">Kanan</option>
+                <option value="kiri">Kiri</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Peran ganda</label>
+              <select id="doublesRole" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
+                <option value="">Pilih</option>
+                <option value="playmaker">Playmaker</option>
+                <option value="smasher">Smasher</option>
+                <option value="allrounder">Allrounder</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Latar</label>
+              <select id="background" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
+                <option value="">Pilih</option>
+                <option value="pelatnas">Pelatnas</option>
+                <option value="semipro">Semipro</option>
+                <option value="komunitas">Komunitas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Raket utama</label>
+              <input id="racket" type="text" maxlength="120" placeholder="mis. Yonex Astrox 88D Pro" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+            </div>
+          </div>
+        </div>
+
+        <label class="flex items-start gap-2.5 text-[11px] text-slate-500">
+          <input id="agree" type="checkbox" required class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+          <span>Saya menyetujui data digunakan untuk keperluan administrasi dan ranking klub.</span>
+        </label>
+
+        <button type="submit" id="registerBtn" class="w-full h-11 rounded-xl pb-btn text-[12px] font-bold disabled:opacity-60 transition-colors flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[19px]">how_to_reg</span>
+          <span>Daftar sebagai anggota</span>
+        </button>
+        <p class="text-center text-[11px] text-slate-400">Sudah terdaftar? <a href="member-login.html" class="font-bold text-blue-600 hover:text-blue-800">Masuk di sini</a></p>
+      </form>
+    </section>
+  </main>
+
+  <div id="successModal" class="fixed inset-0 z-[70] hidden bg-slate-900/50 backdrop-blur-sm items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-2xl">
+      <span class="h-16 w-16 rounded-2xl bg-emerald-100 text-emerald-600 grid place-items-center mx-auto"><span class="material-symbols-outlined text-[34px]">check_circle</span></span>
+      <h2 class="font-display text-xl font-bold mt-4">Pendaftaran berhasil</h2>
+      <p class="text-[12px] text-slate-500 mt-1.5">Akunmu sudah aktif. Nomor anggota:</p>
+      <p id="newMemberNumber" class="mt-2 inline-block px-4 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 font-display text-lg font-bold">-</p>
+      <p class="text-[11px] text-slate-400 mt-3">Kamu bisa langsung membuka dashboard untuk melihat profil dan poin.</p>
+      <button type="button" id="goDashboard" class="mt-5 w-full h-11 rounded-xl pb-btn text-[12px] font-bold">Buka dashboard</button>
+      <a href="index.html" class="mt-3 inline-block text-[11px] font-bold text-slate-400 hover:text-slate-600">Kembali ke beranda</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+      var closed = false;
+
+      Session.init().then(function (u) {
+        if (u) window.location.replace(u.role === 'ADMIN' ? 'admin.html' : 'member.html');
+      }).catch(function () {});
+
+      api.get('/settings').then(function (data) {
+        var club = (data && data.club) || {};
+        if (club.registrationOpen === false) {
+          closed = true;
+          var notice = document.getElementById('regClosedNotice');
+          notice.classList.remove('hidden');
+          var btn = document.getElementById('registerBtn');
+          btn.disabled = true;
+          btn.querySelector('span:last-child').textContent = 'Pendaftaran ditutup';
+        }
+      }).catch(function () {});
+
+      document.getElementById('avatarInput').addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          document.getElementById('avatarPreview').src = ev.target.result;
+          document.getElementById('avatarPreview').classList.remove('hidden');
+          document.getElementById('avatarFallback').classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('password').addEventListener('input', function (e) {
+        var val = e.target.value;
+        var bar = document.getElementById('strengthBar');
+        if (val.length < 5) {
+          bar.className = 'h-full w-1/4 bg-rose-400 transition-all';
+        } else if (val.length < 8) {
+          bar.className = 'h-full w-1/2 bg-amber-400 transition-all';
+        } else {
+          bar.className = 'h-full w-full bg-emerald-500 transition-all';
+        }
+      });
+
+      function normalizePhone(v) {
+        var digits = String(v || '').replace(/[\s\-().]/g, '');
+        if (/^0\d+/.test(digits)) return '+62' + digits.slice(1);
+        if (/^8\d+/.test(digits)) return '+62' + digits;
+        return digits;
+      }
+
+      document.getElementById('registerForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (closed) return;
+
+        var pwd = document.getElementById('password').value;
+        var confirmPwd = document.getElementById('confirmPassword').value;
+        if (pwd !== confirmPwd) {
+          PBUI.toast('Konfirmasi kata sandi tidak sesuai', 'error');
+          return;
+        }
+
+        var gender = document.getElementById('gender').value;
+        if (!gender) {
+          PBUI.toast('Pilih gender terlebih dahulu', 'error');
+          return;
+        }
+
+        var payload = {
+          fullName: document.getElementById('fullName').value.trim(),
+          email: document.getElementById('email').value.trim().toLowerCase(),
+          password: pwd,
+          phone: normalizePhone(document.getElementById('phone').value) || undefined,
+          birthDate: document.getElementById('birthDate').value || undefined,
+          gender: gender,
+          doublesRole: document.getElementById('doublesRole').value || undefined,
+          dominantHand: document.getElementById('dominantHand').value || undefined,
+          background: document.getElementById('background').value || undefined,
+          racket: document.getElementById('racket').value.trim() || undefined
+        };
+
+        var btn = document.getElementById('registerBtn');
+        btn.disabled = true;
+        btn.querySelector('span:last-child').textContent = 'Mengirim pendaftaran...';
+
+        var memberNumber = null;
+        api.post('/auth/register', payload, { _noRetry: true }).then(function (data) {
+          if (data && data.accessToken) api.setToken(data.accessToken);
+          memberNumber = data && data.user && data.user.profile && data.user.profile.memberNumber;
+          var avatar = document.getElementById('avatarInput').files[0];
+          if (avatar) {
+            var fd = new FormData();
+            fd.append('photo', avatar);
+            return api.upload('/members/me/photo', fd).catch(function () {
+              PBUI.toast('Foto profil gagal diunggah', 'error');
+            });
+          }
+        }).then(function () {
+          document.getElementById('newMemberNumber').textContent = memberNumber || 'Terdaftar';
+          var modal = document.getElementById('successModal');
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }).catch(function (err) {
+          PBUI.toast((err && err.message) || 'Pendaftaran gagal. Silakan coba lagi.', 'error');
+          btn.disabled = false;
+          btn.querySelector('span:last-child').textContent = 'Daftar sebagai anggota';
+        });
+      });
+
+      document.getElementById('goDashboard').addEventListener('click', function () {
+        window.location.href = 'member.html';
+      });
+    })();
+  </script>
+</body>
+</html>

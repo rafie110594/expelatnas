@@ -1,0 +1,305 @@
+// ============================================================
+// PB EX PELATNAS — Skema Database (PostgreSQL + Prisma)
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Enums ----------
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum MatchStatus {
+  DRAFT
+  COMPLETED
+  CANCELLED
+}
+
+enum TeamSide {
+  A
+  B
+}
+
+enum PointTxType {
+  INITIAL // poin awal anggota (bukan hasil pertandingan)
+  MATCH_WIN // +poin kemenangan
+  MATCH_LOSS // -poin kekalahan
+  ADJUSTMENT // penyesuaian resmi oleh admin
+  REVERSAL // pembatalan dampak transaksi (koreksi hasil)
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum GalleryCategory {
+  MABAR
+  SPARING
+  UMUM
+}
+
+// ---------- Users & Profil ----------
+
+model User {
+  id           String     @id @default(cuid())
+  fullName     String     @db.VarChar(120)
+  alias        String?    @db.VarChar(120)
+  email        String     @unique @db.VarChar(160)
+  passwordHash String
+  role         Role       @default(MEMBER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  profile         MemberProfile?
+  refreshTokens   RefreshToken[]
+  participations  MatchParticipant[]
+  recordedMatches Match[]            @relation("MatchRecordedBy")
+  memberTx        PointTransaction[] @relation("TxMember")
+  txCreatedBy     PointTransaction[] @relation("TxCreatedBy")
+  auditLogs       AuditLog[]
+  galleryItems    Gallery[]
+  events          Event[]
+
+  @@index([role, status])
+}
+
+model MemberProfile {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memberNumber String    @unique @db.VarChar(20)
+  photoUrl     String?
+  phone        String?   @db.VarChar(20)
+  dateJoined   DateTime  @default(now())
+  birthDate    DateTime?
+
+  // Profil olahraga (dari formulir registrasi)
+  gender         String? @db.VarChar(20) // LAKI_LAKI | PEREMPUAN
+  genderCategory String? @db.VarChar(20) // ganda_putra | ganda_putri
+  doublesRole    String? @db.VarChar(30) // playmaker | smasher | allrounder
+  dominantHand   String? @db.VarChar(10) // kanan | kiri
+  background     String? @db.VarChar(30) // pelatnas | semipro | komunitas
+  racket         String? @db.VarChar(120)
+
+  // Poin & rank
+  initialPoints Int          @default(0) // poin awal — terpisah dari hasil pertandingan
+  currentPoints Int          @default(0) // cache = jumlah transaksi poin aktif
+  rankId        String?
+  rank          RankSetting? @relation(fields: [rankId], references: [id], onDelete: SetNull)
+
+  @@index([currentPoints])
+  @@index([rankId])
+}
+
+// ---------- Rank ----------
+
+model RankSetting {
+  id        String   @id @default(cuid())
+  name      String   @unique @db.VarChar(20) // D | C | B | A
+  minPoints Int
+  maxPoints Int? // null = tanpa batas atas (Rank A)
+  order     Int      @unique // urutan tampil
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members MemberProfile[]
+}
+
+// ---------- Pertandingan ----------
+
+model Match {
+  id        String      @id @default(cuid())
+  title     String      @db.VarChar(160)
+  matchType String      @default("DOUBLES") @db.VarChar(20) // SINGLE | DOUBLES | CLUB
+  status    MatchStatus @default(DRAFT)
+
+  scheduledAt DateTime?
+
+  // Skor tim
+  teamAScore Int?
+  teamBScore Int?
+
+  // Skor asli dipertahankan saat koreksi
+  originalTeamAScore Int?
+  originalTeamBScore Int?
+  correctionReason   String?
+
+  recordedById String
+  recordedBy   User      @relation("MatchRecordedBy", fields: [recordedById], references: [id], onDelete: Restrict)
+  completedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants      MatchParticipant[]
+  pointTransactions PointTransaction[]
+
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model MatchParticipant {
+  id       String   @id @default(cuid())
+  matchId  String
+  match    Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  memberId String
+  member   User     @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  team     TeamSide
+  position Int      @default(0)
+
+  @@unique([matchId, memberId])
+  @@index([memberId])
+}
+
+// ---------- Transaksi Poin (ledger tidak bisa hilang) ----------
+
+model PointTransaction {
+  id       String @id @default(cuid())
+  memberId String
+  member   User   @relation("TxMember", fields: [memberId], references: [id], onDelete: Cascade)
+
+  matchId String?
+  match   Match?  @relation(fields: [matchId], references: [id], onDelete: SetNull)
+
+  type         PointTxType
+  pointsBefore Int
+  delta        Int
+  pointsAfter  Int
+  reason       String?
+
+  // Status koreksi: transaksi lama ditandai isReversed + dicatat tx pembaliknya
+  isReversed Boolean           @default(false)
+  reversesId String?           @unique
+  reverses   PointTransaction? @relation("TxReverses", fields: [reversesId], references: [id], onDelete: SetNull)
+  reversedBy PointTransaction? @relation("TxReverses")
+
+  createdBy     String?
+  createdByUser User?   @relation("TxCreatedBy", fields: [createdBy], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([memberId, createdAt])
+  @@index([matchId])
+}
+
+// ---------- Pengaturan ----------
+
+// Catatan: pengaturan ranking per anggota (MemberRankingSettings) diwakili oleh
+// MemberProfile.initialPoints + PointTransaction tipe INITIAL/ADJUSTMENT,
+// sehingga riwayat poin tetap terstruktur dan dapat diaudit.
+
+// ---------- Galeri & Event ----------
+
+model Gallery {
+  id           String          @id @default(cuid())
+  title        String          @db.VarChar(160)
+  description  String?
+  category     GalleryCategory @default(MABAR)
+  imageUrl     String
+  publicId     String? // id file di Cloudinary/object storage
+  isPublished  Boolean         @default(true)
+  uploadedById String
+  uploadedBy   User            @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([isPublished])
+  @@index([category, isPublished])
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  title       String      @db.VarChar(160)
+  description String?
+  location    String?
+  imageUrl    String?
+  startAt     DateTime
+  endAt       DateTime?
+  status      EventStatus @default(DRAFT)
+  createdById String
+  createdBy   User        @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([status, startAt])
+}
+
+model ClubSettings {
+  id Int @id @default(1) // singleton
+
+  clubName     String  @default("PB EX PELATNAS")
+  logoUrl      String?
+  description  String?
+  contactEmail String? @db.VarChar(160)
+  contactPhone String? @db.VarChar(20)
+  whatsappLink String?
+  socialLinks  Json?
+
+  // Aturan poin (default klub: menang +3, kalah -2)
+  pointsWin  Int @default(3)
+  pointsLoss Int @default(-2)
+
+  // Kebijakan
+  registrationOpen Boolean @default(true)
+  tieBreak         String  @default("MORE_WINS") @db.VarChar(30) // MORE_WINS | OLDEST_JOINED
+
+  // Jadwal latihan rutin (bisa diubah admin)
+  trainingDays     String  @default("Jumat,Sabtu,Minggu") @db.VarChar(80)
+  trainingStart    String  @default("19:00") @db.VarChar(5)
+  trainingEnd      String  @default("22:00") @db.VarChar(5)
+  trainingLocation String  @default("GOR Tameklan") @db.VarChar(160)
+  trainingMapUrl   String? @db.VarChar(500)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------- Audit ----------
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  admin     User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action    String   @db.VarChar(60) // MATCH_COMPLETE | MATCH_CORRECT | POINT_ADJUST | RANK_UPDATE | MEMBER_CREATE ...
+  entity    String   @db.VarChar(60)
+  entityId  String?
+  before    Json?
+  after     Json?
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([adminId])
+}
+
+// ---------- Sesi Refresh Token ----------
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}

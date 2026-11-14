@@ -1,0 +1,85 @@
+html.pb-splash-active,
+html.pb-splash-active body {
+  overflow: hidden;
+}
+
+.pb-splash {
+  --pb-splash-bg: #eef2fb;
+  --pb-splash-fg: #1f2a6b;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: var(--pb-splash-bg);
+  color: var(--pb-splash-fg);
+  overflow: hidden;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+.pb-splash.is-hiding {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pb-splash-stage {
+  position: relative;
+  width: min(80vmin, 520px);
+  aspect-ratio: 1 / 1;
+}
+
+.pb-splash-stage > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pb-splash svg {
+  overflow: visible;
+}
+
+.pb-splash-wrap {
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.28));
+}
+
+.pb-splash-wrap img,
+.pb-splash-wrap svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#pbSplashCanvas {
+  position: absolute;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+}
+
+#pbSplashFull {
+  opacity: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pb-splash {
+    --pb-splash-bg: #0d1226;
+    --pb-splash-fg: #dbe3ff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-splash {
+    transition: none;
+  }
+}

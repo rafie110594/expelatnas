@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <meta content="mobile_tab" name="shell-type" />
+  <title>PB Ex Pelatnas — Admin Dashboard</title>
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet" />
+
+  <style>
+    @layer base {
+      html, body { width: 100vw; margin: 0; padding: 0; background-color: #f3f5ff; }
+      body { overscroll-behavior: none; }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    body { min-height: max(884px, 100dvh); }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+  </style>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#e2e8f0",
+            "outline": "#94a3b8",
+            "on-surface": "#0f172a",
+            "on-surface-variant": "#475569",
+            "primary-container": "#1231b8",
+            "surface": "#f3f5ff",
+            "surface-card": "#ffffff",
+            "primary": "#021c97",
+            "error": "#dc2626",
+            "error-container": "#fee2e2",
+            "secondary": "#fc6703"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["Space Grotesk"],
+            "body-sm": ["Manrope"],
+            "headline-md": ["Space Grotesk"],
+            "headline-sm": ["Space Grotesk"],
+            "body-md": ["Manrope"],
+            "display-hero": ["Space Grotesk"],
+            "label-sm": ["Space Grotesk"],
+            "score-display": ["Space Grotesk"],
+            "label-md": ["Space Grotesk"],
+            "score-display-mobile": ["Space Grotesk"],
+            "body-lg": ["Manrope"]
+          },
+          "fontSize": {
+            "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+            "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          },
+          "boxShadow": {
+            "2xs": "0 1px 2px 0 rgb(15 23 42 / 0.05)",
+            "xs": "0 1px 2px 0 rgb(15 23 42 / 0.05)"
+          }
+        }
+      }
+    };
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/ui.js"></script>
+  <link rel="stylesheet" href="assets/theme.css" />
+  <script>
+    // Gerbang login: wajib autentikasi ADMIN sebelum masuk dasbor
+    // (diverifikasi setelah DOM dimuat — lihat skrip bawah)
+  </script>
+</head>
+
+<body class="bg-[#f3f5ff] font-body-md text-slate-800 antialiased flex flex-col min-h-screen selection:bg-blue-600 selection:text-white">
+
+  <!-- ========== TOP APP BAR ========== -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm pt-safe">
+    <div class="h-1 w-full pb-accent-line"></div>
+    <div class="h-16 w-full max-w-[1440px] mx-auto px-4 lg:px-6 flex items-center gap-3">
+
+      <!-- Brand -->
+      <a href="admin.html" class="flex items-center gap-2.5 shrink-0 rounded-lg transition-opacity hover:opacity-80">
+        <img alt="PB Ex Pelatnas Crest Logo" class="h-10 w-10 object-contain rounded-full shadow-sm bg-white"
+             src="assets/logo-round.png" />
+        <span class="hidden sm:flex flex-col leading-none min-w-0">
+          <span class="font-headline-sm text-[18px] text-slate-900 font-bold tracking-tight leading-none whitespace-nowrap">PB EX PELATNAS</span>
+          <span class="font-label-sm text-[10px] text-[#021c97] font-bold uppercase tracking-wider mt-1 whitespace-nowrap">Admin Dashboard</span>
+        </span>
+      </a>
+
+      <!-- Search (tablet & desktop) -->
+      <div class="hidden md:flex flex-1 justify-center px-4 min-w-0">
+        <label class="relative w-full max-w-md">
+          <span class="material-symbols-outlined absolute inset-y-0 left-3 my-auto h-5 flex items-center text-[20px] text-slate-400 pointer-events-none">search</span>
+          <input type="search" placeholder="Cari member, jadwal, turnamen…"
+                 class="w-full h-10 pl-10 pr-4 rounded-full bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors" />
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-1 shrink-0 ml-auto min-w-0">
+        <button aria-label="Search" class="md:hidden w-10 h-10 flex items-center justify-center text-slate-600 hover:text-blue-600 rounded-full hover:bg-slate-100 transition-colors">
+          <span class="material-symbols-outlined text-[23px]">search</span>
+        </button>
+        <button aria-label="Notifications" class="relative w-10 h-10 flex items-center justify-center text-slate-600 hover:text-blue-600 rounded-full hover:bg-slate-100 transition-colors">
+          <span class="material-symbols-outlined text-[23px]">notifications</span>
+          <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-600 shadow-[0_0_6px_rgba(37,99,235,0.7)]"></span>
+        </button>
+        <!-- Tombol Exit (Logout) -->
+        <button onclick="adminLogout()" aria-label="Exit" title="Exit — Keluar dari Admin Dashboard"
+                class="h-10 px-3 flex items-center gap-1.5 rounded-full bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 active:scale-95 transition-all shadow-xs">
+          <span class="material-symbols-outlined text-[20px]">logout</span>
+          <span class="hidden sm:flex font-label-md text-label-md font-bold">Exit</span>
+        </button>
+        <span class="hidden sm:block w-px h-6 bg-slate-200 mx-1.5"></span>
+        <button aria-label="Member Profile" class="flex items-center gap-2 h-10 pl-1.5 pr-2 rounded-full hover:bg-slate-100 transition-colors min-w-0">
+          <img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-sm flex-shrink-0"
+               src="assets/logo-round.png" />
+          <span class="hidden lg:flex flex-col items-start leading-none min-w-0">
+            <span class="font-label-md text-label-md text-slate-900 font-semibold whitespace-nowrap">Head Official</span>
+            <span class="font-label-sm text-label-sm text-blue-600 mt-0.5 whitespace-nowrap">Admin</span>
+          </span>
+          <span class="hidden lg:block material-symbols-outlined text-[18px] text-slate-400">expand_more</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========== DESKTOP SIDEBAR ========== -->
+  <aside class="hidden lg:flex fixed left-0 top-16 bottom-0 w-60 z-40 flex-col border-r border-slate-200/80 bg-white/80 backdrop-blur-xl px-4 py-6 gap-1">
+    <span class="font-label-sm text-label-sm text-slate-400 uppercase tracking-wider px-3 mb-2">Area Admin</span>
+
+    <a href="admin.html" aria-current="page"
+       class="flex items-center gap-3 h-11 px-3 rounded-lg bg-blue-50 text-blue-700 font-semibold transition-colors border border-blue-200/70">
+      <span class="material-symbols-outlined text-[22px]">admin_panel_settings</span>
+      <span class="font-label-md text-label-md">Dashboard Admin</span>
+    </a>
+
+    <!-- Logout -->
+    <button onclick="adminLogout()"
+       class="flex items-center gap-3 h-11 px-3 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors">
+      <span class="material-symbols-outlined text-[22px]">logout</span>
+      <span class="font-label-md text-label-md">Keluar</span>
+    </button>
+
+    <!-- Season summary card -->
+    <div class="mt-auto p-3 rounded-xl bg-blue-50 border border-blue-200/70 flex flex-col gap-1">
+      <span class="font-label-sm text-label-sm text-blue-700 font-bold uppercase">Konsol Musim 2026</span>
+      <span class="font-body-sm text-body-sm text-slate-600" id="seasonText">Memuat ringkasan...</span>
+    </div>
+  </aside>
+
+  <!-- ========== MAIN ========== -->
+  <main class="flex-1 flex flex-col relative w-full pt-16 pb-24 lg:pb-8 lg:pl-60 bg-[#f0f4fc]">
+    <div class="flex flex-col w-full lg:max-w-[1080px] lg:mx-auto px-margin pb-10 space-y-4">
+
+      <!-- Top Admin Identifier Strip -->
+      <div class="flex items-center justify-between pt-3">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+          <span class="font-label-sm text-[11px] tracking-wider uppercase font-semibold">ADMIN CONSOLE • PB EX PELATNAS</span>
+        </div>
+        <span class="font-label-md text-xs font-semibold text-slate-600 flex items-center gap-1 bg-white px-2.5 py-1 rounded-full border border-slate-200 shadow-xs">
+          <span class="material-symbols-outlined text-[16px] text-blue-600">verified_user</span>
+          Head Official
+        </span>
+      </div>
+
+      <!-- Club Admin KPI Metric Strip -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <div class="bg-white rounded-xl p-3 flex flex-col justify-between shadow-xs border border-slate-200/80">
+          <div class="flex items-center justify-between text-slate-500 mb-1">
+            <span class="font-label-sm text-[11px] font-bold tracking-wide">AKTIF</span>
+            <span class="material-symbols-outlined text-[18px] text-blue-600">groups</span>
+          </div>
+          <div>
+            <span class="font-headline-md text-2xl font-bold text-slate-900 tracking-tight" id="kpiMembers">-</span>
+            <p class="font-label-sm text-[11px] text-slate-500 mt-0.5">Member Terdaftar</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-3 flex flex-col justify-between shadow-xs border border-slate-200/80">
+          <div class="flex items-center justify-between text-slate-500 mb-1">
+            <span class="font-label-sm text-[11px] font-bold tracking-wide">MATCH</span>
+            <span class="material-symbols-outlined text-[18px] text-amber-500">sports_score</span>
+          </div>
+          <div>
+            <span class="font-headline-md text-2xl font-bold text-slate-900 tracking-tight" id="kpiMatchesMonth">-</span>
+            <p class="font-label-sm text-[11px] text-slate-500 mt-0.5">Bulan Ini</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Score Entry Module -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90 space-y-4">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[22px]">add_task</span>
+            <h2 class="font-headline-sm text-lg font-bold text-slate-900">Input Hasil Skor</h2>
+          </div>
+          <span class="font-label-sm text-[11px] bg-blue-50 text-blue-700 font-semibold px-2.5 py-0.5 rounded-full border border-blue-200/60">LIGA REGULER</span>
+        </div>
+
+        <!-- Match Mode Switcher -->
+        <div class="grid grid-cols-2 p-1 bg-slate-100/80 rounded-xl border border-slate-200">
+          <button class="py-2 rounded-lg font-label-md text-xs font-semibold text-slate-600 transition-all hover:text-slate-900 flex items-center justify-center gap-1.5" id="btn-mode-single" type="button">
+            <span class="material-symbols-outlined text-[16px]">person</span> Single (Tunggal)
+          </button>
+          <button class="py-2 rounded-lg font-label-md text-xs font-bold bg-white text-blue-700 shadow-xs border border-slate-200/60 transition-all flex items-center justify-center gap-1.5" id="btn-mode-doubles" type="button">
+            <span class="material-symbols-outlined text-[16px]">group</span> Ganda (Doubles)
+          </button>
+        </div>
+
+        <!-- Date, Time & Court Selector -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200/70">
+            <label class="block font-label-sm text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Jadwal Sesi</label>
+            <div class="flex items-center gap-1.5 text-slate-900">
+              <span class="material-symbols-outlined text-[18px] text-blue-600">calendar_today</span>
+              <input class="w-full bg-transparent font-medium text-xs text-slate-900 focus:outline-none" type="datetime-local" id="match-scheduled" />
+            </div>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200/70">
+            <label class="block font-label-sm text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Judul Laga</label>
+            <div class="flex items-center gap-1.5 text-slate-900">
+              <span class="material-symbols-outlined text-[18px] text-blue-600">stadium</span>
+              <input class="w-full bg-transparent font-medium text-xs text-slate-900 focus:outline-none" type="text" id="match-title" placeholder="mis. Laga Placement Kamis" maxlength="160" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Team A Box (Left / Blue Accent) -->
+        <div class="bg-blue-50/50 rounded-xl p-3.5 space-y-3 border border-blue-200/80 shadow-xs relative overflow-hidden">
+          <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600"></div>
+          <div class="flex items-center justify-between pl-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded font-label-sm text-[11px] bg-blue-600 text-white uppercase font-bold tracking-wide">TIM A</span>
+              <span class="font-label-md text-xs font-bold text-slate-900">Pihak Pemenang</span>
+            </div>
+            <span class="font-label-sm text-xs text-blue-700 font-bold flex items-center gap-1 bg-blue-100/80 px-2 py-0.5 rounded-full">
+              <span class="material-symbols-outlined text-[15px]">military_tech</span> WINNER
+            </span>
+          </div>
+          <div class="space-y-2 pl-1">
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Pemain 1</label>
+              <div class="bg-white rounded-lg p-2.5 flex items-center justify-between gap-2 border border-slate-200 shadow-2xs">
+                <select class="w-full min-w-0 bg-transparent text-sm text-slate-900 font-semibold focus:outline-none" id="teamA1"></select>
+                <span class="font-label-sm text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded shrink-0" id="teamA1Pts">— Pts</span>
+              </div>
+            </div>
+            <div id="team-a-player-2">
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Pemain 2</label>
+              <div class="bg-white rounded-lg p-2.5 flex items-center justify-between gap-2 border border-slate-200 shadow-2xs">
+                <select class="w-full min-w-0 bg-transparent text-sm text-slate-900 font-semibold focus:outline-none" id="teamA2"></select>
+                <span class="font-label-sm text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded shrink-0" id="teamA2Pts">— Pts</span>
+              </div>
+            </div>
+            <div class="pt-1.5 flex items-center justify-between">
+              <span class="font-label-md text-xs font-bold text-slate-700">Skor Poin Akhir</span>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg bg-white border border-slate-300 flex items-center justify-center text-slate-700 hover:bg-slate-50 active:scale-95 transition-transform shadow-2xs font-bold" onclick="adjustScore('scoreA', -1)" type="button">
+                  <span class="material-symbols-outlined text-[18px]">remove</span>
+                </button>
+                <input class="w-16 h-10 rounded-lg bg-white border border-blue-300 text-center font-headline-md text-2xl font-bold text-blue-700 shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500" id="scoreA" type="number" min="0" max="999" placeholder="0" />
+                <button class="w-9 h-9 rounded-lg bg-white border border-slate-300 flex items-center justify-center text-slate-700 hover:bg-slate-50 active:scale-95 transition-transform shadow-2xs font-bold" onclick="adjustScore('scoreA', 1)" type="button">
+                  <span class="material-symbols-outlined text-[18px]">add</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Match Versus Divider Badge -->
+        <div class="relative flex items-center justify-center my-1">
+          <div class="w-full h-px bg-slate-200"></div>
+          <span class="absolute bg-white px-3 font-label-sm text-[11px] text-slate-500 font-bold tracking-widest uppercase border border-slate-200 rounded-full">VS</span>
+        </div>
+
+        <!-- Team B Box (Right / Opponent Accent) -->
+        <div class="bg-slate-50 rounded-xl p-3.5 space-y-3 border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-slate-400"></div>
+          <div class="flex items-center justify-between pl-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded font-label-sm text-[11px] bg-slate-600 text-white uppercase font-bold tracking-wide">TIM B</span>
+              <span class="font-label-md text-xs font-bold text-slate-900">Pihak Lawan</span>
+            </div>
+            <span class="font-label-sm text-xs text-slate-600 font-bold flex items-center gap-1 bg-slate-200/80 px-2 py-0.5 rounded-full">
+              <span class="material-symbols-outlined text-[15px]">close</span> RUNNER-UP
+            </span>
+          </div>
+          <div class="space-y-2 pl-1">
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Pemain 1</label>
+              <div class="bg-white rounded-lg p-2.5 flex items-center justify-between gap-2 border border-slate-200 shadow-2xs">
+                <select class="w-full min-w-0 bg-transparent text-sm text-slate-900 font-semibold focus:outline-none" id="teamB1"></select>
+                <span class="font-label-sm text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded shrink-0" id="teamB1Pts">— Pts</span>
+              </div>
+            </div>
+            <div id="team-b-player-2">
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Pemain 2</label>
+              <div class="bg-white rounded-lg p-2.5 flex items-center justify-between gap-2 border border-slate-200 shadow-2xs">
+                <select class="w-full min-w-0 bg-transparent text-sm text-slate-900 font-semibold focus:outline-none" id="teamB2"></select>
+                <span class="font-label-sm text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded shrink-0" id="teamB2Pts">— Pts</span>
+              </div>
+            </div>
+            <div class="pt-1.5 flex items-center justify-between">
+              <span class="font-label-md text-xs font-bold text-slate-700">Skor Poin Akhir</span>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg bg-white border border-slate-300 flex items-center justify-center text-slate-700 hover:bg-slate-50 active:scale-95 transition-transform shadow-2xs font-bold" onclick="adjustScore('scoreB', -1)" type="button">
+                  <span class="material-symbols-outlined text-[18px]">remove</span>
+                </button>
+                <input class="w-16 h-10 rounded-lg bg-white border border-slate-300 text-center font-headline-md text-2xl font-bold text-slate-800 shadow-2xs focus:outline-none focus:ring-2 focus:ring-slate-400" id="scoreB" type="number" min="0" max="999" placeholder="0" />
+                <button class="w-9 h-9 rounded-lg bg-white border border-slate-300 flex items-center justify-center text-slate-700 hover:bg-slate-50 active:scale-95 transition-transform shadow-2xs font-bold" onclick="adjustScore('scoreB', 1)" type="button">
+                  <span class="material-symbols-outlined text-[18px]">add</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Realtime Point Calculation Preview Card -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[21px]">calculate</span>
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Kalkulasi Poin Otomatis</h3>
+          </div>
+          <span class="font-label-sm text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md" id="calcRule">WIN +3 | LOSS -2</span>
+        </div>
+
+        <!-- Match Outcome Status Bar -->
+        <div class="bg-slate-50 rounded-xl p-3 flex items-center justify-between border border-slate-200/80">
+          <div class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-slate-400 text-[24px]" id="calcStatusIcon">pending</span>
+            <div>
+              <p class="font-label-md text-xs font-bold text-slate-900" id="calcStatusText">Masukkan skor kedua sisi untuk pratinjau</p>
+              <p class="font-body-sm text-[11px] text-slate-500 font-medium" id="calcStatusSub">Poin +3 pemenang / -2 pihak kalah</p>
+            </div>
+          </div>
+          <span class="font-headline-md text-2xl font-bold text-blue-700 tracking-wider" id="calcScore">0 - 0</span>
+        </div>
+
+        <!-- Live Player Breakdown Matrix -->
+        <div class="space-y-2 pt-1" id="calcMatrix"></div>
+
+        <!-- Action Buttons -->
+        <div class="pt-2 flex flex-col gap-2">
+          <button class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-headline-sm text-base font-bold flex items-center justify-center gap-2 shadow-md shadow-blue-600/25 active:scale-[0.98] transition-all" id="btn-save-match" type="button">
+            <span class="material-symbols-outlined text-[20px]">save</span> Simpan &amp; Update Ranking
+          </button>
+          <button class="w-full py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 font-label-md text-xs font-bold hover:bg-slate-200 transition-colors flex items-center justify-center gap-1.5" id="btn-reset-form" type="button">
+            <span class="material-symbols-outlined text-[17px]">restart_alt</span> Reset Form Pertandingan
+          </button>
+        </div>
+      </section>
+
+      <!-- Ranking Rules & Threshold Config -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[20px]">tune</span>
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Aturan Tier Ranking</h3>
+          </div>
+          <button class="font-label-sm text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-0.5" id="btn-edit-ranks" type="button">
+            <span class="material-symbols-outlined text-[16px]">edit</span> Ubah Standar
+          </button>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-slate-800" id="rankTierGrid"></div>        <!-- Rule Footer Note -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex items-center justify-between text-slate-600">
+          <span class="font-label-sm text-[11px] font-medium flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px] text-blue-600">info</span> <span id="rulePoints">Nilai Menang: +3 Pts | Kalah: -2 Pts</span>
+          </span>
+          <span class="font-label-sm text-[11px] font-semibold text-slate-500" id="ruleReg">Registrasi: -</span>
+        </div>
+      </section>
+
+      <!-- Jadwal Latihan Rutin -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[20px]">schedule</span>
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Jadwal Latihan</h3>
+          </div>
+          <span class="font-label-sm text-xs font-semibold text-slate-500">Tampil di beranda</span>
+        </div>
+        <div>
+          <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1.5">Hari latihan</label>
+          <div class="flex flex-wrap gap-1.5" id="trainDays"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Jam mulai</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="trainStart" type="time" />
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Jam selesai</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="trainEnd" type="time" />
+          </div>
+        </div>
+        <div>
+          <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Lokasi / nama GOR</label>
+          <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="trainLocation" maxlength="160" type="text" />
+        </div>
+        <div>
+          <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Link Google Maps</label>
+          <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="trainMap" maxlength="500" placeholder="https://maps.app.goo.gl/..." type="url" />
+        </div>
+        <button class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-label-md text-xs font-bold shadow-md transition-colors" id="btnSaveTraining" type="button">
+          Simpan Jadwal Latihan
+        </button>
+      </section>
+
+      <!-- Recent Matches Log (Audit & Reversal) -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[20px]">history</span>
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Log Pertandingan Selesai</h3>
+          </div>
+          <span class="font-label-sm text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Terverifikasi</span>
+        </div>
+        <div class="space-y-2.5" id="matchLog"></div>
+      </section>
+
+      <!-- ===== Manajemen Member ===== -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[20px]">groups</span>
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Manajemen Member</h3>
+          </div>
+          <button class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-label-sm text-xs font-bold shadow-2xs transition-colors flex items-center gap-1" id="btnAddMember" type="button">
+            <span class="material-symbols-outlined text-[15px]">person_add</span> Tambah
+          </button>
+        </div>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+          <input class="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:bg-white transition-colors" id="memberSearch" placeholder="Cari nama, email, atau nomor member..." type="search" />
+        </div>
+        <div class="space-y-2" id="memberList"></div>
+        <button class="w-full py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 font-label-sm text-xs font-semibold hover:bg-slate-100 transition-colors hidden" id="memberMore" type="button">Muat lebih banyak</button>
+      </section>
+
+      <!-- ===== Manajemen Agenda (Event) ===== -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[20px]">event</span>
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Manajemen Agenda</h3>
+          </div>
+          <button class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-label-sm text-xs font-bold shadow-2xs transition-colors flex items-center gap-1" id="btnAddEvent" type="button">
+            <span class="material-symbols-outlined text-[15px]">add</span> Agenda
+          </button>
+        </div>
+        <div class="flex items-center gap-1.5" id="eventFilterChips">
+          <button class="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-label-sm text-xs font-bold" data-st="ALL" type="button">Semua</button>
+          <button class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-label-sm text-xs font-bold" data-st="DRAFT" type="button">Draf</button>
+          <button class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-label-sm text-xs font-bold" data-st="PUBLISHED" type="button">Terbit</button>
+        </div>
+        <div class="space-y-2" id="eventAdminList"></div>
+        <button class="w-full py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 font-label-sm text-xs font-semibold hover:bg-slate-100 transition-colors hidden" id="eventAdminMore" type="button">Muat lebih banyak</button>
+      </section>
+
+      <!-- ===== Manajemen Galeri ===== -->
+      <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/90 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-600 text-[20px]">photo_library</span>
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Manajemen Galeri</h3>
+          </div>
+          <button class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-label-sm text-xs font-bold shadow-2xs transition-colors flex items-center gap-1" id="btnAddGallery" type="button">
+            <span class="material-symbols-outlined text-[15px]">add</span> Foto
+          </button>
+        </div>
+        <div class="flex items-center gap-1.5" id="galleryFilterChips">
+          <button class="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-label-sm text-xs font-bold" data-cat="ALL" type="button">Semua</button>
+          <button class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-label-sm text-xs font-bold" data-cat="MABAR" type="button">Mabar</button>
+          <button class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-label-sm text-xs font-bold" data-cat="SPARING" type="button">Sparing</button>
+        </div>
+        <div class="space-y-2" id="galleryAdminList"></div>
+        <button class="w-full py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 font-label-sm text-xs font-semibold hover:bg-slate-100 transition-colors hidden" id="galleryAdminMore" type="button">Muat lebih banyak</button>
+      </section>
+
+      <!-- ===== MODAL: Pengaturan Poin & Rank ===== -->
+      <div class="fixed inset-0 z-[70] bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4" id="modalRank">
+        <div class="bg-white rounded-2xl w-full max-w-md p-4 shadow-xl border border-slate-200 max-h-[85vh] overflow-y-auto space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Aturan Poin &amp; Rank</h3>
+            <button class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center" onclick="closeModal('modalRank')" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Poin Menang</label>
+              <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="cfgWin" type="number" min="0" max="100" />
+            </div>
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Poin Kalah</label>
+              <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="cfgLoss" type="number" min="-100" max="0" />
+            </div>
+          </div>
+          <label class="flex items-center gap-2 text-xs text-slate-700 font-medium">
+            <input class="rounded border-slate-300 text-blue-600 focus:ring-blue-500" id="cfgReg" type="checkbox" /> Pendaftaran publik dibuka
+          </label>
+          <p class="font-body-sm text-[11px] text-slate-500">Aturan poin baru hanya berlaku untuk pertandingan berikutnya — ledger lama tidak diubah.</p>
+          <div class="space-y-2 pt-1 border-t border-slate-100" id="rankRows"></div>
+          <button class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-label-md text-xs font-bold shadow-md transition-colors" id="btnSaveRankCfg" type="button">
+            Simpan Pengaturan
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== MODAL: Koreksi Skor ===== -->
+      <div class="fixed inset-0 z-[70] bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4" id="modalCorrection">
+        <div class="bg-white rounded-2xl w-full max-w-md p-4 shadow-xl border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Koreksi Skor Pertandingan</h3>
+            <button class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center" onclick="closeModal('modalCorrection')" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button>
+          </div>
+          <p class="font-body-sm text-[11px] text-slate-600 bg-amber-50 border border-amber-200 rounded-lg p-2" id="corrInfo"></p>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Skor Baru Sisi A</label>
+              <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="corrA" type="number" min="0" max="999" />
+            </div>
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Skor Baru Sisi B</label>
+              <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="corrB" type="number" min="0" max="999" />
+            </div>
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Alasan Koreksi (min. 5 karakter)</label>
+            <textarea class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 resize-none" id="corrReason" maxlength="500" rows="3" placeholder="mis. Input skor terbalik saat pencatatan awal"></textarea>
+          </div>
+          <button class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-label-md text-xs font-bold shadow-md transition-colors" id="btnSaveCorrection" type="button">
+            Terapkan Koreksi (Reversal Poin)
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== MODAL: Member (Tambah / Ubah) ===== -->
+      <div class="fixed inset-0 z-[70] bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4" id="modalMember">
+        <div class="bg-white rounded-2xl w-full max-w-md p-4 shadow-xl border border-slate-200 max-h-[85vh] overflow-y-auto space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 class="font-headline-sm text-base font-bold text-slate-900" id="memModalTitle">Tambah Member</h3>
+            <button class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center" onclick="closeModal('modalMember')" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button>
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Nama Lengkap</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memName" maxlength="120" type="text" />
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Alias / Nama Panggilan (opsional)</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memAlias" maxlength="120" type="text" placeholder="Tampil di leaderboard" />
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Gender</label>
+            <select class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memGender">
+              <option value="">Belum diisi</option>
+              <option value="LAKI_LAKI">Laki-laki</option>
+              <option value="PEREMPUAN">Perempuan</option>
+            </select>
+          </div>
+          <div class="mem-create-only">
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Email</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memEmail" type="email" />
+          </div>
+          <div class="mem-create-only">
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Kata Sandi</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memPassword" minlength="8" type="password" />
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">No. HP (opsional)</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memPhone" maxlength="20" type="text" />
+          </div>
+          <div class="mem-create-only">
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Poin Awal</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memInitialPoints" type="number" value="0" />
+          </div>
+          <div class="mem-edit-only hidden">
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Status Keanggotaan</label>
+            <select class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memStatus">
+              <option value="ACTIVE">Aktif</option>
+              <option value="INACTIVE">Nonaktif</option>
+            </select>
+          </div>
+          <button class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-label-md text-xs font-bold shadow-md transition-colors" id="btnSaveMember" type="button">
+            Simpan Member
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== MODAL: Penyesuaian Poin ===== -->
+      <div class="fixed inset-0 z-[70] bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4" id="modalPoints">
+        <div class="bg-white rounded-2xl w-full max-w-md p-4 shadow-xl border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 class="font-headline-sm text-base font-bold text-slate-900">Penyesuaian Poin Manual</h3>
+            <button class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center" onclick="closeModal('modalPoints')" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button>
+          </div>
+          <p class="font-body-sm text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded-lg p-2" id="ptsInfo"></p>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Delta Poin (mis. 5 atau -3)</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="ptsDelta" type="number" min="-999" max="999" />
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Alasan (min. 3 karakter)</label>
+            <textarea class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 resize-none" id="ptsReason" maxlength="500" rows="3" placeholder="mis. Hadiah juara minileague internal"></textarea>
+          </div>
+          <button class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-label-md text-xs font-bold shadow-md transition-colors" id="btnSavePoints" type="button">
+            Terapkan Penyesuaian
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== MODAL: Agenda (Tambah / Ubah) ===== -->
+      <div class="fixed inset-0 z-[70] bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4" id="modalEvent">
+        <div class="bg-white rounded-2xl w-full max-w-md p-4 shadow-xl border border-slate-200 max-h-[85vh] overflow-y-auto space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 class="font-headline-sm text-base font-bold text-slate-900" id="evModalTitle">Tambah Agenda</h3>
+            <button class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center" onclick="closeModal('modalEvent')" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button>
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Judul Agenda</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="evTitle" maxlength="160" type="text" />
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Deskripsi</label>
+            <textarea class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 resize-none" id="evDesc" maxlength="3000" rows="3"></textarea>
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Lokasi</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="evLocation" maxlength="300" type="text" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Mulai</label>
+              <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="evStart" type="datetime-local" />
+            </div>
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Selesai (opsional)</label>
+              <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="evEnd" type="datetime-local" />
+            </div>
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Status</label>
+            <select class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="evStatus">
+              <option value="DRAFT">Draf</option>
+              <option value="PUBLISHED">Terbit</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Banner (opsional, maks. 5MB)</label>
+            <input class="block w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-slate-100 file:text-slate-700 file:font-bold file:text-xs" id="evImage" accept="image/jpeg,image/png,image/webp,image/gif" type="file" />
+          </div>
+          <label class="ev-edit-only hidden flex items-center gap-2 text-xs text-slate-700 font-medium">
+            <input class="rounded border-slate-300 text-red-600 focus:ring-red-500" id="evClearImage" type="checkbox" /> Hapus banner saat ini
+          </label>
+          <button class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-label-md text-xs font-bold shadow-md transition-colors" id="btnSaveEvent" type="button">
+            Simpan Agenda
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== MODAL: Galeri (Tambah / Ubah) ===== -->
+      <div class="fixed inset-0 z-[70] bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4" id="modalGallery">
+        <div class="bg-white rounded-2xl w-full max-w-md p-4 shadow-xl border border-slate-200 max-h-[85vh] overflow-y-auto space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 class="font-headline-sm text-base font-bold text-slate-900" id="galModalTitle">Tambah Foto</h3>
+            <button class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center" onclick="closeModal('modalGallery')" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button>
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Judul Foto</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="galTitle" maxlength="160" type="text" />
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Deskripsi (opsional)</label>
+            <textarea class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 resize-none" id="galDesc" maxlength="1000" rows="2"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Kategori</label>
+              <select class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="galCategory">
+                <option value="MABAR">Mabar</option>
+                <option value="SPARING">Sparing</option>
+                <option value="UMUM">Umum</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Status</label>
+              <select class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="galPublished">
+                <option value="true">Terbit</option>
+                <option value="false">Draf</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Foto (maks. 5MB)</label>
+            <input class="block w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-slate-100 file:text-slate-700 file:font-bold file:text-xs" id="galImage" accept="image/jpeg,image/png,image/webp,image/gif" type="file" />
+          </div>
+          <p class="font-body-sm text-[11px] text-slate-500" id="galHint"></p>
+          <button class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-label-md text-xs font-bold shadow-md transition-colors" id="btnSaveGallery" type="button">
+            Simpan Foto
+          </button>
+        </div>
+      </div>
+
+      <!-- Toast Alert Container -->
+      <div class="fixed top-20 left-1/2 -translate-x-1/2 z-[60] bg-slate-900 text-white px-4 py-2.5 rounded-full font-label-md text-xs font-bold shadow-lg flex items-center gap-2 opacity-0 pointer-events-none transition-opacity duration-300" id="save-toast">
+        <span class="material-symbols-outlined text-[18px] text-emerald-400">verified</span>
+        Skor Terkirim &amp; Ladder Ranking Diperbarui!
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========== BOTTOM NAV ========== -->
+  <nav class="fixed bottom-0 inset-x-0 z-50 lg:hidden pb-safe bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-md">
+    <div class="flex items-center justify-around h-16 px-space-xs">
+      <a aria-current="page" class="relative flex flex-col items-center justify-center min-w-[56px] h-full text-blue-600 font-bold transition-colors" data-path="admin-dashboard" data-label="Admin" href="admin.html">
+        <span class="indicator absolute top-0 w-8 h-0.5 rounded-full bg-blue-600"></span>
+        <span class="material-symbols-outlined text-[22px]">admin_panel_settings</span>
+        <span class="font-label-sm text-[11px] mt-0.5 tracking-tight font-bold">Admin</span>
+      </a>
+      <button onclick="adminLogout()" aria-label="Keluar" class="relative flex flex-col items-center justify-center min-w-[56px] h-full text-slate-400 hover:text-red-600 transition-colors">
+        <span class="material-symbols-outlined text-[22px]">logout</span>
+        <span class="font-label-sm text-[11px] mt-0.5 tracking-tight font-medium">Keluar</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    // Gerbang login: wajib sesi ADMIN (verifikasi backend) — bila bukan admin, kembali
+    Session.init().then(function (u) {
+      if (!u || u.role !== 'ADMIN') {
+        window.location.replace('login.html');
+        return;
+      }
+      boot();
+    });
+
+    // Logout: cabut sesi di server lalu kembali ke halaman login
+    function adminLogout() {
+      Session.logout().then(function () {
+        window.location.href = 'login.html';
+      });
+    }
+
+    // ============================================================
+    // Util
+    // ============================================================
+    function esc(s) { return PBUI.escapeHtml(s); }
+    function setEl(id, text) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+    function toggleEl(el, show) { if (el) el.classList.toggle('hidden', !show); }
+    function openModal(id) {
+      var m = document.getElementById(id);
+      if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    }
+    function closeModal(id) {
+      var m = document.getElementById(id);
+      if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+    }
+    function dtoLocal(iso) {
+      if (!iso) return '';
+      var d = new Date(iso);
+      if (isNaN(d)) return '';
+      var p = function (n) { return (n < 10 ? '0' : '') + n; };
+      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) +
+        'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+    }
+
+    // ============================================================
+    // State global
+    // ============================================================
+    var SETTINGS = null;   // { club, ranks, stats }
+    var MEMBERS = [];      // cache member aktif (dropdown pemain)
+    var MATCH_TYPE = 'DOUBLES';
+    var MEM_ROWS = {};     // baris member terakhir dirender (id -> item)
+    var EV_ROWS = {};      // baris agenda terakhir dirender
+    var MEM_PAGE = 1, MEM_TOTAL_PAGES = 1, MEM_QUERY = '';
+    var EV_PAGE = 1, EV_TOTAL_PAGES = 1, EV_STATUS = 'ALL';
+    var GAL_ROWS = {};     // baris galeri terakhir dirender
+    var GAL_PAGE = 1, GAL_TOTAL_PAGES = 1, GAL_CAT = 'ALL';
+    var MEM_ID = null, MEM_MODE = 'create';
+    var CORR_ID = null, EV_ID = null, PT_ID = null, GAL_ID = null;
+
+    function boot() {
+      loadSettings().then(function () {
+        loadMembersCache();
+      loadKpi();
+        loadMatchLog();
+        loadMembers(true);
+        loadEventsAdmin(true);
+        loadGalleryAdmin(true);
+        updateCalc();
+      });
+    }
+
+    // ============================================================
+    // Pengaturan (tier, poin) + KPI
+    // ============================================================
+    function loadSettings() {
+      return api.get('/settings').then(function (data) {
+        SETTINGS = data;
+        fillSettingsUI();
+      }).catch(function () { /* biarkan default */ });
+    }
+
+    function rankOf(pts) {
+      var rs = (SETTINGS && SETTINGS.ranks) || [];
+      var lowest = null;
+      for (var i = 0; i < rs.length; i++) {
+        var r = rs[i];
+        if (r.isActive === false) continue;
+        if (!lowest || (r.minPoints || 0) < (lowest.minPoints || 0)) lowest = r;
+        if (pts >= (r.minPoints || 0) &&
+            (r.maxPoints == null || pts <= r.maxPoints)) return r;
+      }
+      return lowest;
+    }
+
+    function fillSettingsUI() {
+      var club = (SETTINGS && SETTINGS.club) || {};
+      var tierBox = document.getElementById('rankTierGrid');
+      if (tierBox) {
+        var tierStyle = {
+          A: 'bg-blue-50/70 border-blue-200/80 text-blue-700',
+          'B+': 'bg-blue-50/60 border-blue-200/70 text-blue-700',
+          B: 'bg-sky-50/70 border-sky-200/80 text-sky-700',
+          C: 'bg-indigo-50/70 border-indigo-200/80 text-indigo-700',
+          D: 'bg-slate-50 border-slate-200 text-slate-600'
+        };
+        tierBox.innerHTML = ((SETTINGS && SETTINGS.ranks) || []).map(function (rk) {
+          var lo = rk.minPoints != null ? rk.minPoints : 0;
+          var range = rk.maxPoints != null ? lo + ' - ' + rk.maxPoints + ' Pts' : '>= ' + lo + ' Pts';
+          var st = tierStyle[rk.name] || tierStyle.D;
+          return '<div class="border rounded-xl p-2.5 flex items-center justify-between gap-2 ' + st + '">' +
+            '<div class="flex items-center gap-2 min-w-0"><span class="w-6 h-6 rounded bg-slate-700 text-white font-label-sm text-xs font-bold flex items-center justify-center shrink-0">' + esc(rk.name) + '</span>' +
+            '<span class="font-label-md text-xs font-bold text-slate-900 truncate">Tier ' + esc(rk.name) + '</span></div>' +
+            '<span class="font-label-sm text-[11px] font-bold whitespace-nowrap">' + esc(range) + '</span></div>';
+        }).join('') || '<p class="text-xs text-slate-400">Belum ada rank.</p>';
+      }      var w = club.pointsWin != null ? club.pointsWin : 3;
+      var l = club.pointsLoss != null ? club.pointsLoss : -2;
+      setEl('rulePoints', 'Nilai Menang: +' + w + ' Pts | Kalah: ' + l + ' Pts');
+      setEl('calcRule', 'WIN +' + w + ' | LOSS ' + l);
+      setEl('ruleReg', 'Registrasi: ' + (club.registrationOpen ? 'Dibuka' : 'Ditutup'));
+      var st = (SETTINGS && SETTINGS.stats) || {};
+      if (st.members != null) setEl('kpiMembers', PBUI.fmtNum(st.members));
+      setEl('seasonText',
+        (st.matches != null ? st.matches : '-') + ' skor tercatat · ' +
+        (st.members != null ? st.members : '-') + ' member aktif');
+      fillTrainingUI(club);
+    }
+
+    var TRAIN_DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+    function fillTrainingUI(club) {
+      var box = document.getElementById('trainDays');
+      if (box) {
+        var active = String(club.trainingDays || '').split(',').map(function (d) { return d.trim(); }).filter(Boolean);
+        box.innerHTML = TRAIN_DAYS.map(function (d) {
+          var on = active.indexOf(d) !== -1;
+          return '<label class="cursor-pointer"><input type="checkbox" class="hidden train-day" value="' + d + '"' + (on ? ' checked' : '') + ' />' +
+            '<span class="inline-flex px-2.5 py-1 rounded-lg border text-[11px] font-bold ' + (on ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-50 text-slate-600 border-slate-200') + '">' + d + '</span></label>';
+        }).join('');
+        box.querySelectorAll('.train-day').forEach(function (input) {
+          input.addEventListener('change', function () {
+            var span = input.parentNode.querySelector('span');
+            span.className = 'inline-flex px-2.5 py-1 rounded-lg border text-[11px] font-bold ' + (input.checked ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-50 text-slate-600 border-slate-200');
+          });
+        });
+      }
+      var st = document.getElementById('trainStart'); if (st) st.value = club.trainingStart || '19:00';
+      var en = document.getElementById('trainEnd'); if (en) en.value = club.trainingEnd || '22:00';
+      var loc = document.getElementById('trainLocation'); if (loc) loc.value = club.trainingLocation || '';
+      var map = document.getElementById('trainMap'); if (map) map.value = club.trainingMapUrl || '';
+    }
+
+    function loadKpi() {
+      api.get('/matches?status=COMPLETED&limit=100').then(function (r) {
+        var now = new Date();
+        var items = (r && r.items) || [];
+        var n = items.filter(function (x) {
+          var d = new Date(x.completedAt || x.createdAt);
+          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        }).length;
+        setEl('kpiMatchesMonth', n);
+      }).catch(function () {});
+    }
+
+    // ============================================================
+    // Form entry skor: dropdown pemain + preview kalkulasi
+    // ============================================================
+    function loadMembersCache() {
+      return api.get('/members?limit=100&status=ACTIVE').then(function (r) {
+        MEMBERS = (r && r.items) || [];
+        ['teamA1', 'teamA2', 'teamB1', 'teamB2'].forEach(fillPlayerSelect);
+      }).catch(function () {});
+    }
+
+    function fillPlayerSelect(id) {
+      var sel = document.getElementById(id);
+      if (!sel) return;
+      sel.innerHTML = '<option value="">— pilih pemain —</option>' +
+        MEMBERS.map(function (mb) {
+          return '<option value="' + mb.id + '">' + esc(mb.alias || mb.fullName) +
+            ' (' + esc(mb.memberNumber || '-') + ')</option>';
+        }).join('');
+    }
+
+    function memberById(id) {
+      for (var i = 0; i < MEMBERS.length; i++) if (MEMBERS[i].id === id) return MEMBERS[i];
+      return null;
+    }
+
+    function updatePtsChip(id) {
+      var sel = document.getElementById(id);
+      var chip = document.getElementById(id + 'Pts');
+      if (!sel || !chip) return;
+      var mb = memberById(sel.value);
+      chip.textContent = mb ? mb.currentPoints + ' Pts' : '— Pts';
+    }
+
+    function chosenPlayers() {
+      var d = MATCH_TYPE === 'DOUBLES';
+      var g = function (id) {
+        var s = document.getElementById(id);
+        return s && s.value ? [s.value] : [];
+      };
+      return { A: g('teamA1').concat(d ? g('teamA2') : []), B: g('teamB1').concat(d ? g('teamB2') : []) };
+    }
+
+    function adjustScore(inputId, delta) {
+      var input = document.getElementById(inputId);
+      if (!input) return;
+      var val = parseInt(input.value, 10) || 0;
+      val = Math.max(0, val + delta);
+      input.value = val;
+      updateCalc();
+    }
+
+    function scoreVal(id) {
+      var el = document.getElementById(id);
+      return el ? parseInt(el.value, 10) : NaN;
+    }
+
+    function updateCalc() {
+      var sa = scoreVal('scoreA');
+      var sb = scoreVal('scoreB');
+      var sides = chosenPlayers();
+      var box = document.getElementById('calcMatrix');
+      var club = (SETTINGS && SETTINGS.club) || {};
+      var pw = club.pointsWin != null ? club.pointsWin : 3;
+      var pl = club.pointsLoss != null ? club.pointsLoss : -2;
+      setEl('calcScore', (isNaN(sa) ? 0 : sa) + ' - ' + (isNaN(sb) ? 0 : sb));
+
+      var picked = sides.A.concat(sides.B);
+      var valid = !isNaN(sa) && !isNaN(sb) && sa >= 0 && sb >= 0 && sa !== sb && picked.length >= 2;
+      if (!valid) {
+        setEl('calcStatusIcon', 'pending');
+        var ic = document.getElementById('calcStatusIcon');
+        if (ic) ic.className = 'material-symbols-outlined text-slate-400 text-[24px]';
+        setEl('calcStatusText', 'Lengkapi pemain & skor kedua sisi');
+        setEl('calcStatusSub', 'Poin +' + pw + ' pemenang / ' + pl + ' pihak kalah');
+        box.innerHTML = picked.length
+          ? picked.map(function (id) { return calcRow(id, null, pw, pl); }).join('')
+          : '<p class="font-body-sm text-[11px] text-slate-400 text-center py-2">Pilih pemain untuk melihat proyeksi poin.</p>';
+        return;
+      }
+      var aWin = sa > sb;
+      setEl('calcStatusIcon', 'check_circle');
+      var ic2 = document.getElementById('calcStatusIcon');
+      if (ic2) ic2.className = 'material-symbols-outlined text-emerald-600 text-[24px]';
+      setEl('calcStatusText', 'Sisi ' + (aWin ? 'A' : 'B') + ' MENANG (+' + pw + ' Poin)');
+      setEl('calcStatusSub', 'Sisi ' + (aWin ? 'B' : 'A') + ' KALAH (' + pl + ' Poin)');
+      box.innerHTML = sides.A.map(function (id) { return calcRow(id, aWin, pw, pl); })
+        .concat(sides.B.map(function (id) { return calcRow(id, !aWin, pw, pl); })).join('');
+    }
+
+    function calcRow(id, isWin, pw, pl) {
+      var mb = memberById(id);
+      if (!mb) return '';
+      var cur = mb.currentPoints || 0;
+      var dot = isWin === null ? 'bg-slate-300' : (isWin ? 'bg-emerald-500' : 'bg-rose-500');
+      var right = '';
+      if (isWin !== null) {
+        var delta = isWin ? pw : pl;
+        var nxt = cur + delta;
+        var cr = rankOf(cur), nr = rankOf(nxt);
+        var chip, chipCls, arrowCls, newCls;
+        if (isWin) { arrowCls = 'text-emerald-600'; newCls = 'text-emerald-600'; }
+        else { arrowCls = 'text-rose-600'; newCls = 'text-rose-600'; }
+        if (!nr) { chip = 'Belum masuk rank'; chipCls = 'text-slate-600 bg-slate-200'; }
+        else if (cr && cr.id === nr.id) { chip = 'Tetap Rank ' + nr.name; chipCls = 'text-slate-700 bg-slate-200'; }
+        else if (!cr || (nr.order || 0) > (cr.order || 0)) { chip = 'Naik ke Rank ' + nr.name; chipCls = 'text-emerald-700 bg-emerald-100'; }
+        else { chip = 'Turun ke Rank ' + nr.name; chipCls = 'text-rose-700 bg-rose-100'; }
+        right =
+          '<span class="text-slate-500">' + cur + ' Pts</span>' +
+          '<span class="material-symbols-outlined text-[13px] ' + arrowCls + '">arrow_forward</span>' +
+          '<span class="' + newCls + ' font-bold">' + nxt + ' Pts</span>' +
+          '<span class="font-label-sm text-[10px] font-bold ' + chipCls + ' px-1.5 py-0.5 rounded">' + chip + '</span>';
+      } else {
+        right = '<span class="text-slate-500">' + cur + ' Pts</span>';
+      }
+      return '<div class="flex items-center justify-between p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/70">' +
+        '<div class="flex items-center gap-2 min-w-0">' +
+        '<span class="w-2.5 h-2.5 rounded-full ' + dot + ' shrink-0"></span>' +
+        '<span class="font-body-sm text-xs font-semibold text-slate-900 truncate">' + esc(mb.fullName) + '</span>' +
+        '</div><div class="flex items-center gap-2 font-label-md text-xs shrink-0">' + right + '</div></div>';
+    }
+
+    // Toggle Singles vs Doubles
+    var btnSingle = document.getElementById('btn-mode-single');
+    var btnDoubles = document.getElementById('btn-mode-doubles');
+    var p2A = document.getElementById('team-a-player-2');
+    var p2B = document.getElementById('team-b-player-2');
+
+    var MODE_ON = 'py-2 rounded-lg font-label-md text-xs font-bold bg-white text-blue-700 shadow-xs border border-slate-200/60 transition-all flex items-center justify-center gap-1.5';
+    var MODE_OFF = 'py-2 rounded-lg font-label-md text-xs font-semibold text-slate-600 transition-all hover:text-slate-900 flex items-center justify-center gap-1.5';
+
+    if (btnSingle && btnDoubles) {
+      btnSingle.addEventListener('click', function () {
+        MATCH_TYPE = 'SINGLE';
+        btnSingle.className = MODE_ON;
+        btnDoubles.className = MODE_OFF;
+        if (p2A) p2A.classList.add('hidden');
+        if (p2B) p2B.classList.add('hidden');
+        updateCalc();
+      });
+      btnDoubles.addEventListener('click', function () {
+        MATCH_TYPE = 'DOUBLES';
+        btnDoubles.className = MODE_ON;
+        btnSingle.className = MODE_OFF;
+        if (p2A) p2A.classList.remove('hidden');
+        if (p2B) p2B.classList.remove('hidden');
+        updateCalc();
+      });
+    }
+
+    ['teamA1', 'teamA2', 'teamB1', 'teamB2'].forEach(function (id) {
+      var sel = document.getElementById(id);
+      if (sel) sel.addEventListener('change', function () {
+        updatePtsChip(id);
+        updateCalc();
+      });
+    });
+    ['scoreA', 'scoreB'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', updateCalc);
+    });
+
+    // Save feedback micro-interaction
+    var btnSave = document.getElementById('btn-save-match');
+    var toast = document.getElementById('save-toast');
+
+    function showAdminToast(message) {
+      if (!toast) return;
+      var label = toast.childNodes[toast.childNodes.length - 1];
+      if (message && label) label.textContent = ' ' + message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(function () {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+        toast.classList.remove('opacity-100');
+        if (message && label) label.textContent = ' Skor Terkirim & Ladder Ranking Diperbarui!';
+      }, 2600);
+    }
+
+    function resetForm() {
+      ['teamA1', 'teamA2', 'teamB1', 'teamB2'].forEach(function (id) {
+        var s = document.getElementById(id);
+        if (s) s.value = '';
+        updatePtsChip(id);
+      });
+      var sa = document.getElementById('scoreA');
+      var sb = document.getElementById('scoreB');
+      if (sa) sa.value = '';
+      if (sb) sb.value = '';
+      var t = document.getElementById('match-title');
+      if (t) t.value = '';
+      var sch = document.getElementById('match-scheduled');
+      if (sch) sch.value = '';
+      updateCalc();
+    }
+
+    if (btnSave) btnSave.addEventListener('click', saveMatch);
+
+    function saveMatch() {
+      var title = (document.getElementById('match-title').value || '').trim();
+      var sa = scoreVal('scoreA');
+      var sb = scoreVal('scoreB');
+      var sides = chosenPlayers();
+      if (title.length < 3) return showAdminToast('Judul laga minimal 3 karakter');
+      if (!sides.A.length || !sides.B.length) return showAdminToast('Pilih minimal 1 pemain tiap sisi');
+      var all = sides.A.concat(sides.B);
+      if (new Set(all).size !== all.length) return showAdminToast('Pemain tidak boleh di kedua sisi');
+      if (isNaN(sa) || isNaN(sb) || sa < 0 || sb < 0) return showAdminToast('Skor wajib diisi');
+      if (sa === sb) return showAdminToast('Skor tidak boleh seri');
+      var payload = {
+        title: title,
+        matchType: MATCH_TYPE,
+        teamA: sides.A,
+        teamB: sides.B,
+        teamAScore: sa,
+        teamBScore: sb,
+      };
+      var sch = document.getElementById('match-scheduled').value;
+      if (sch) {
+        try { payload.scheduledAt = new Date(sch).toISOString(); } catch (e) {}
+      }
+      if (btnSave) { btnSave.disabled = true; }
+      api.post('/matches', payload).then(function () {
+        showAdminToast('Skor tersimpan & poin diperbarui');
+        resetForm();
+        loadKpi();
+        loadMatchLog();
+        loadMembersCache();
+        loadSettings();
+      }).catch(function (e) {
+        showAdminToast(e.message || 'Gagal menyimpan pertandingan');
+      }).then(function () {
+        if (btnSave) btnSave.disabled = false;
+      });
+    }
+
+    var btnReset = document.getElementById('btn-reset-form');
+    if (btnReset) btnReset.addEventListener('click', resetForm);
+
+    // ============================================================
+    // Log pertandingan + koreksi skor
+    // ============================================================
+    function loadMatchLog() {
+      var box = document.getElementById('matchLog');
+      if (!box) return;
+      PBUI.setLoading(box, 'Memuat log...');
+      api.get('/matches?status=COMPLETED&limit=10').then(function (r) {
+        var items = (r && r.items) || [];
+        if (!items.length) {
+          PBUI.showEmpty(box, 'Belum ada pertandingan tercatat', 'sports_score');
+          return;
+        }
+        box.innerHTML = items.map(logRow).join('');
+      }).catch(function (e) {
+        PBUI.showError(box, e && e.message, function () { loadMatchLog(); });
+      });
+    }
+
+    function logRow(m) {
+      var a = m.teams.A.map(function (t) { return t.alias || t.fullName; }).filter(Boolean).join(' / ') || '-';
+      var b = m.teams.B.map(function (t) { return t.alias || t.fullName; }).filter(Boolean).join(' / ') || '-';
+      var when = PBUI.fmtDate(m.completedAt || m.createdAt, true);
+      var chip = m.isCorrected
+        ? '<span class="text-amber-600 font-bold">DIKOREKSI</span>'
+        : '<span class="text-blue-700 font-bold">TERSINKRON</span>';
+      var enc = encodeURIComponent(m.title || 'Pertandingan').replace(/'/g, '%27');
+      return '<div class="bg-slate-50 rounded-xl p-3 space-y-2 border border-slate-200">' +
+        '<div class="flex items-center justify-between text-slate-500 font-label-sm text-[11px]">' +
+        '<span>' + esc(m.matchType) + ' • ' + esc(when) + '</span>' + chip + '</div>' +
+        '<div class="flex items-center justify-between">' +
+        '<div class="space-y-0.5 min-w-0 pr-2">' +
+        '<p class="font-body-sm text-xs text-slate-900 font-bold truncate">' + esc(a) + '</p>' +
+        '<p class="font-body-sm text-[11px] text-slate-500 truncate">vs ' + esc(b) + '</p>' +
+        '</div>' +
+        '<div class="text-right shrink-0"><span class="font-headline-md text-xl font-bold text-slate-900 tracking-tight">' +
+        m.teamAScore + ' - ' + m.teamBScore + '</span></div></div>' +
+        '<div class="pt-1 flex items-center justify-between gap-2">' +
+        '<span class="font-body-sm text-[11px] text-slate-500 truncate">' + esc(m.title || '') + '</span>' +
+        '<button class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 font-label-sm text-xs font-semibold hover:text-blue-600 shadow-2xs transition-colors flex items-center gap-1 shrink-0" type="button" onclick="openCorrection(\'' + m.id + '\',' + m.teamAScore + ',' + m.teamBScore + ', decodeURIComponent(\'' + enc + '\'))">' +
+        '<span class="material-symbols-outlined text-[14px]">edit</span> Koreksi Skor</button>' +
+        '</div></div>';
+    }
+
+    function openCorrection(id, sa, sb, title) {
+      CORR_ID = id;
+      setEl('corrInfo', 'Laga: ' + title + ' — skor lama ' + sa + '-' + sb +
+        '. Koreksi membatalkan poin lama (reversal) lalu menerapkan ulang sesuai skor baru; skor asli & riwayat tetap tersimpan.');
+      document.getElementById('corrA').value = sa;
+      document.getElementById('corrB').value = sb;
+      document.getElementById('corrReason').value = '';
+      openModal('modalCorrection');
+    }
+
+    var btnSaveCorr = document.getElementById('btnSaveCorrection');
+    if (btnSaveCorr) btnSaveCorr.addEventListener('click', function () {
+      var sa = parseInt(document.getElementById('corrA').value, 10);
+      var sb = parseInt(document.getElementById('corrB').value, 10);
+      var reason = (document.getElementById('corrReason').value || '').trim();
+      if (isNaN(sa) || isNaN(sb) || sa < 0 || sb < 0) return showAdminToast('Skor baru wajib diisi');
+      if (sa === sb) return showAdminToast('Skor tidak boleh seri');
+      if (reason.length < 5) return showAdminToast('Alasan koreksi minimal 5 karakter');
+      btnSaveCorr.disabled = true;
+      api.patch('/matches/' + CORR_ID + '/correct', { teamAScore: sa, teamBScore: sb, reason: reason })
+        .then(function () {
+          closeModal('modalCorrection');
+          showAdminToast('Koreksi diterapkan — poin dihitung ulang');
+          loadKpi();
+          loadMatchLog();
+          loadMembersCache();
+        }).catch(function (e) {
+          showAdminToast(e.message || 'Gagal menerapkan koreksi');
+        }).then(function () { btnSaveCorr.disabled = false; });
+    });
+
+    // ============================================================
+    // Manajemen member
+    // ============================================================
+    function loadMembers(reset) {
+      if (reset) MEM_PAGE = 1;
+      var box = document.getElementById('memberList');
+      if (!box) return;
+      if (reset) PBUI.setLoading(box, 'Memuat member...');
+      var url = '/members?page=' + MEM_PAGE + '&limit=8' +
+        (MEM_QUERY ? '&search=' + encodeURIComponent(MEM_QUERY) : '');
+      api.get(url).then(function (r) {
+        var items = (r && r.items) || [];
+        var pg = (r && r.pagination) || {};
+        MEM_TOTAL_PAGES = pg.totalPages || 1;
+        MEM_ROWS = {};
+        items.forEach(function (mb) { MEM_ROWS[mb.id] = mb; });
+        var html = items.map(memberRow).join('');
+        if (reset) box.innerHTML = html;
+        else box.insertAdjacentHTML('beforeend', html);
+        if (reset && !items.length) PBUI.showEmpty(box, 'Member tidak ditemukan', 'person_search');
+        toggleEl(document.getElementById('memberMore'), MEM_PAGE < MEM_TOTAL_PAGES);
+      }).catch(function (e) {
+        PBUI.showError(box, e && e.message, function () { loadMembers(true); });
+      });
+    }
+
+    function memberRow(mb) {
+      var stChip = mb.status === 'ACTIVE'
+        ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200">Aktif</span>'
+        : '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200">Nonaktif</span>';
+      var toggleBtn = mb.status === 'ACTIVE'
+        ? '<button class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-rose-600 transition-colors" title="Nonaktifkan" type="button" onclick="toggleMemberStatus(\'' + mb.id + '\',\'INACTIVE\')"><span class="material-symbols-outlined text-[15px]">person_off</span></button>'
+        : '<button class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-emerald-600 transition-colors" title="Aktifkan" type="button" onclick="toggleMemberStatus(\'' + mb.id + '\',\'ACTIVE\')"><span class="material-symbols-outlined text-[15px]">person_check</span></button>';
+      return '<div class="bg-slate-50 rounded-xl p-3 border border-slate-200 flex items-center justify-between gap-2">' +
+        '<div class="min-w-0">' +
+        '<p class="font-body-sm text-xs font-bold text-slate-900 truncate">' + esc(mb.alias || mb.fullName) +
+        ' <span class="text-slate-400 font-normal">(' + esc(mb.memberNumber || '-') + ')</span></p>' +
+        '<p class="font-body-sm text-[11px] text-slate-500 truncate">' + esc(mb.email) +
+        ' | ' + esc(mb.gender === 'LAKI_LAKI' ? 'Laki-laki' : mb.gender === 'PEREMPUAN' ? 'Perempuan' : '-') +
+        ' • Rank ' + esc(mb.rank ? mb.rank.name : '-') + ' ' + stChip + '</p>' +
+        '</div>' +
+        '<div class="flex items-center gap-1.5 shrink-0">' +
+        '<span class="font-label-sm text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-0.5 rounded">' +
+        mb.currentPoints + ' Pts</span>' +
+        '<button class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors" title="Ubah data" type="button" onclick="openMemberEdit(\'' + mb.id + '\')"><span class="material-symbols-outlined text-[15px]">edit</span></button>' +
+        '<button class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-amber-600 hover:bg-amber-50 transition-colors" title="Sesuaikan poin" type="button" onclick="openPointsModal(\'' + mb.id + '\')"><span class="material-symbols-outlined text-[15px]">add_circle</span></button>' +
+        toggleBtn +
+        '</div></div>';
+    }
+
+    var memberMoreBtn = document.getElementById('memberMore');
+    if (memberMoreBtn) memberMoreBtn.addEventListener('click', function () {
+      MEM_PAGE++;
+      loadMembers(false);
+    });
+
+    var memberSearch = document.getElementById('memberSearch');
+    var memSearchTimer = null;
+    if (memberSearch) memberSearch.addEventListener('input', function (e) {
+      clearTimeout(memSearchTimer);
+      memSearchTimer = setTimeout(function () {
+        MEM_QUERY = e.target.value.trim();
+        loadMembers(true);
+      }, 300);
+    });
+
+    function setMemberMode(mode) {
+      MEM_MODE = mode;
+      var createOnly = document.querySelectorAll('.mem-create-only');
+      var editOnly = document.querySelectorAll('.mem-edit-only');
+      createOnly.forEach(function (el) { el.classList.toggle('hidden', mode !== 'create'); });
+      editOnly.forEach(function (el) { el.classList.toggle('hidden', mode !== 'edit'); });
+      setEl('memModalTitle', mode === 'create' ? 'Tambah Member' : 'Ubah Member');
+    }
+
+    var btnAddMember = document.getElementById('btnAddMember');
+    if (btnAddMember) btnAddMember.addEventListener('click', function () {
+      MEM_ID = null;
+      setMemberMode('create');
+      document.getElementById('memName').value = '';
+      document.getElementById('memAlias').value = '';
+      document.getElementById('memGender').value = '';
+      document.getElementById('memEmail').value = '';
+      document.getElementById('memPassword').value = '';
+      document.getElementById('memPhone').value = '';
+      document.getElementById('memInitialPoints').value = '0';
+      openModal('modalMember');
+    });
+
+    function openMemberEdit(id) {
+      var mb = MEM_ROWS[id];
+      if (!mb) return;
+      MEM_ID = id;
+      setMemberMode('edit');
+      document.getElementById('memName').value = mb.fullName || '';
+      document.getElementById('memAlias').value = mb.alias || '';
+      document.getElementById('memGender').value = mb.gender || '';
+      document.getElementById('memPhone').value = mb.phone || '';
+      document.getElementById('memStatus').value = mb.status || 'ACTIVE';
+      openModal('modalMember');
+    }
+
+    var btnSaveMember = document.getElementById('btnSaveMember');
+    if (btnSaveMember) btnSaveMember.addEventListener('click', function () {
+      var name = (document.getElementById('memName').value || '').trim();
+      var alias = (document.getElementById('memAlias').value || '').trim();
+      var gender = document.getElementById('memGender').value || null;
+      var phone = (document.getElementById('memPhone').value || '').trim();
+      if (name.length < 2) return showAdminToast('Nama minimal 2 karakter');
+      btnSaveMember.disabled = true;
+      var req;
+      if (MEM_MODE === 'create') {
+        var email = (document.getElementById('memEmail').value || '').trim().toLowerCase();
+        var pass = document.getElementById('memPassword').value || '';
+        var ipRaw = document.getElementById('memInitialPoints').value;
+        var ip = ipRaw === '' ? 0 : parseInt(ipRaw, 10);
+        if (!email) return showAdminToast('Email wajib diisi');
+        if (pass.length < 8) return showAdminToast('Kata sandi minimal 8 karakter');
+        if (isNaN(ip) || ip < 0) return showAdminToast('Poin awal tidak valid');
+        req = api.post('/members', {
+          fullName: name, alias: alias || null, gender: gender, email: email, password: pass,
+          initialPoints: ip, phone: phone || undefined,
+        });
+      } else {
+        req = api.patch('/members/' + MEM_ID, {
+          fullName: name,
+          alias: alias || null,
+          gender: gender,
+          phone: phone || null,
+          status: document.getElementById('memStatus').value,
+        });
+      }
+      req.then(function () {
+        closeModal('modalMember');
+        showAdminToast(MEM_MODE === 'create' ? 'Member baru dibuat' : 'Data member diperbarui');
+        loadMembers(true);
+        loadMembersCache();
+        loadSettings();
+      }).catch(function (e) {
+        showAdminToast(e.message || 'Gagal menyimpan member');
+      }).then(function () { btnSaveMember.disabled = false; });
+    });
+
+    function toggleMemberStatus(id, status) {
+      var mb = MEM_ROWS[id];
+      api.patch('/members/' + id, { status: status }).then(function () {
+        showAdminToast('Status ' + (mb ? mb.fullName : 'member') + ' → ' +
+          (status === 'ACTIVE' ? 'Aktif' : 'Nonaktif'));
+        loadMembers(true);
+      }).catch(function (e) {
+        showAdminToast(e.message || 'Gagal mengubah status');
+      });
+    }
+
+    function openPointsModal(id) {
+      var mb = MEM_ROWS[id];
+      if (!mb) return;
+      PT_ID = id;
+      setEl('ptsInfo', mb.fullName + ' (' + (mb.memberNumber || '-') + ') — poin saat ini: ' +
+        mb.currentPoints + ' • Rank ' + (mb.rank ? mb.rank.name : '-'));
+      document.getElementById('ptsDelta').value = '';
+      document.getElementById('ptsReason').value = '';
+      openModal('modalPoints');
+    }
+
+    var btnSavePoints = document.getElementById('btnSavePoints');
+    if (btnSavePoints) btnSavePoints.addEventListener('click', function () {
+      var delta = parseInt(document.getElementById('ptsDelta').value, 10);
+      var reason = (document.getElementById('ptsReason').value || '').trim();
+      if (isNaN(delta) || delta === 0) return showAdminToast('Delta poin tidak boleh 0');
+      if (reason.length < 3) return showAdminToast('Alasan wajib diisi');
+      btnSavePoints.disabled = true;
+      api.post('/members/' + PT_ID + '/points', { delta: delta, reason: reason })
+        .then(function () {
+          closeModal('modalPoints');
+          showAdminToast('Penyesuaian poin tercatat di ledger');
+          loadMembers(true);
+          loadMembersCache();
+        }).catch(function (e) {
+          showAdminToast(e.message || 'Gagal menyesuaikan poin');
+        }).then(function () { btnSavePoints.disabled = false; });
+    });
+
+    // ============================================================
+    // Manajemen agenda (event)
+    // ============================================================
+    function loadEventsAdmin(reset) {
+      if (reset) EV_PAGE = 1;
+      var box = document.getElementById('eventAdminList');
+      if (!box) return;
+      if (reset) PBUI.setLoading(box, 'Memuat agenda...');
+      var url = '/events/all?page=' + EV_PAGE + '&limit=8' +
+        (EV_STATUS !== 'ALL' ? '&status=' + EV_STATUS : '');
+      api.get(url).then(function (r) {
+        var items = (r && r.items) || [];
+        var pg = (r && r.pagination) || {};
+        EV_TOTAL_PAGES = pg.totalPages || 1;
+        EV_ROWS = {};
+        items.forEach(function (ev) { EV_ROWS[ev.id] = ev; });
+        var html = items.map(eventAdminRow).join('');
+        if (reset) box.innerHTML = html;
+        else box.insertAdjacentHTML('beforeend', html);
+        if (reset && !items.length) PBUI.showEmpty(box, 'Belum ada agenda', 'event_busy');
+        toggleEl(document.getElementById('eventAdminMore'), EV_PAGE < EV_TOTAL_PAGES);
+      }).catch(function (e) {
+        PBUI.showError(box, e && e.message, function () { loadEventsAdmin(true); });
+      });
+    }
+
+    function eventAdminRow(ev) {
+      var chip = ev.status === 'PUBLISHED'
+        ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200">Terbit</span>'
+        : '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200">Draf</span>';
+      return '<div class="bg-slate-50 rounded-xl p-3 border border-slate-200 flex items-center justify-between gap-2">' +
+        '<div class="min-w-0">' +
+        '<p class="font-body-sm text-xs font-bold text-slate-900 truncate">' + esc(ev.title) + ' ' + chip + '</p>' +
+        '<p class="font-body-sm text-[11px] text-slate-500 truncate">' + esc(PBUI.fmtDate(ev.startAt, true)) +
+        (ev.location ? ' • ' + esc(ev.location) : '') + '</p>' +
+        '</div>' +
+        '<div class="flex items-center gap-1.5 shrink-0">' +
+        '<button class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors" title="Ubah" type="button" onclick="openEventEdit(\'' + ev.id + '\')"><span class="material-symbols-outlined text-[15px]">edit</span></button>' +
+        '<button class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-rose-600 hover:bg-rose-50 transition-colors" title="Hapus" type="button" onclick="deleteEvent(\'' + ev.id + '\')"><span class="material-symbols-outlined text-[15px]">delete</span></button>' +
+        '</div></div>';
+    }
+
+    var evChips = document.querySelectorAll('#eventFilterChips button');
+    evChips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        evChips.forEach(function (c) {
+          c.className = 'px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-label-sm text-xs font-bold';
+        });
+        chip.className = 'px-2.5 py-1 rounded-lg bg-blue-600 text-white font-label-sm text-xs font-bold';
+        EV_STATUS = chip.getAttribute('data-st') || 'ALL';
+        loadEventsAdmin(true);
+      });
+    });
+
+    var eventAdminMoreBtn = document.getElementById('eventAdminMore');
+    if (eventAdminMoreBtn) eventAdminMoreBtn.addEventListener('click', function () {
+      EV_PAGE++;
+      loadEventsAdmin(false);
+    });
+
+    var btnAddEvent = document.getElementById('btnAddEvent');
+    if (btnAddEvent) btnAddEvent.addEventListener('click', function () {
+      EV_ID = null;
+      setEl('evModalTitle', 'Tambah Agenda');
+      document.getElementById('evTitle').value = '';
+      document.getElementById('evDesc').value = '';
+      document.getElementById('evLocation').value = '';
+      document.getElementById('evStart').value = '';
+      document.getElementById('evEnd').value = '';
+      document.getElementById('evStatus').value = 'DRAFT';
+      document.getElementById('evImage').value = '';
+      document.querySelectorAll('.ev-edit-only').forEach(function (el) { el.classList.add('hidden'); });
+      openModal('modalEvent');
+    });
+
+    function openEventEdit(id) {
+      var ev = EV_ROWS[id];
+      if (!ev) return;
+      EV_ID = id;
+      setEl('evModalTitle', 'Ubah Agenda');
+      document.getElementById('evTitle').value = ev.title || '';
+      document.getElementById('evDesc').value = ev.description || '';
+      document.getElementById('evLocation').value = ev.location || '';
+      document.getElementById('evStart').value = dtoLocal(ev.startAt);
+      document.getElementById('evEnd').value = dtoLocal(ev.endAt);
+      document.getElementById('evStatus').value = ev.status || 'DRAFT';
+      document.getElementById('evImage').value = '';
+      document.getElementById('evClearImage').checked = false;
+      document.querySelectorAll('.ev-edit-only').forEach(function (el) { el.classList.remove('hidden'); });
+      openModal('modalEvent');
+    }
+
+    function collectEventForm() {
+      var title = (document.getElementById('evTitle').value || '').trim();
+      var start = document.getElementById('evStart').value;
+      var end = document.getElementById('evEnd').value;
+      if (title.length < 3) { showAdminToast('Judul minimal 3 karakter'); return null; }
+      if (!start) { showAdminToast('Waktu mulai wajib diisi'); return null; }
+      var startIso, endIso = null;
+      try { startIso = new Date(start).toISOString(); } catch (e) { showAdminToast('Waktu mulai tidak valid'); return null; }
+      if (end) {
+        try { endIso = new Date(end).toISOString(); } catch (e) { showAdminToast('Waktu selesai tidak valid'); return null; }
+        if (endIso < startIso) { showAdminToast('Waktu selesai sebelum mulai'); return null; }
+      }
+      return {
+        title: title,
+        description: (document.getElementById('evDesc').value || '').trim() || null,
+        location: (document.getElementById('evLocation').value || '').trim() || null,
+        startAt: startIso,
+        endAt: endIso,
+        status: document.getElementById('evStatus').value,
+      };
+    }
+
+    var btnSaveEvent = document.getElementById('btnSaveEvent');
+    if (btnSaveEvent) btnSaveEvent.addEventListener('click', function () {
+      var data = collectEventForm();
+      if (!data) return;
+      var file = document.getElementById('evImage').files[0];
+      var req;
+      if (EV_ID) {
+        var clearImg = document.getElementById('evClearImage').checked;
+        if (file || clearImg) {
+          var fd = new FormData();
+          fd.append('title', data.title);
+          if (data.description) fd.append('description', data.description);
+          if (data.location) fd.append('location', data.location);
+          fd.append('startAt', data.startAt);
+          if (data.endAt) fd.append('endAt', data.endAt);
+          else fd.append('endAt', '');
+          fd.append('status', data.status);
+          if (file) fd.append('image', file);
+          if (clearImg) fd.append('clearImage', 'true');
+          req = api.patch('/events/' + EV_ID, fd);
+        } else {
+          req = api.patch('/events/' + EV_ID, data);
+        }
+      } else if (file) {
+        var fd2 = new FormData();
+        fd2.append('title', data.title);
+        if (data.description) fd2.append('description', data.description);
+        if (data.location) fd2.append('location', data.location);
+        fd2.append('startAt', data.startAt);
+        if (data.endAt) fd2.append('endAt', data.endAt);
+        fd2.append('status', data.status);
+        fd2.append('image', file);
+        req = api.post('/events', fd2);
+      } else {
+        var createPayload = {
+          title: data.title,
+          description: data.description,
+          location: data.location,
+          startAt: data.startAt,
+          status: data.status,
+        };
+        if (data.endAt) createPayload.endAt = data.endAt;
+        req = api.post('/events', createPayload);
+      }
+      btnSaveEvent.disabled = true;
+      req.then(function () {
+        closeModal('modalEvent');
+        showAdminToast(EV_ID ? 'Agenda diperbarui' : 'Agenda dibuat');
+        loadEventsAdmin(true);
+      }).catch(function (e) {
+        showAdminToast(e.message || 'Gagal menyimpan agenda');
+      }).then(function () { btnSaveEvent.disabled = false; });
+    });
+
+    function deleteEvent(id) {
+      var ev = EV_ROWS[id];
+      PBUI.confirmDialog('Hapus agenda "' + (ev ? ev.title : '') + '"? Tindakan ini tidak bisa dibatalkan.', {
+        confirmText: 'Ya, Hapus', danger: true,
+      }).then(function (ok) {
+        if (!ok) return;
+        api.del('/events/' + id).then(function () {
+          showAdminToast('Agenda dihapus');
+          loadEventsAdmin(true);
+        }).catch(function (e) {
+          showAdminToast(e.message || 'Gagal menghapus agenda');
+        });
+      });
+    }
+
+    // ============================================================
+    // Pengaturan poin & rank (modal)
+    // ============================================================
+    var btnEditRanks = document.getElementById('btn-edit-ranks');
+    if (btnEditRanks) btnEditRanks.addEventListener('click', function () {
+      var club = (SETTINGS && SETTINGS.club) || {};
+      document.getElementById('cfgWin').value = club.pointsWin != null ? club.pointsWin : 3;
+      document.getElementById('cfgLoss').value = club.pointsLoss != null ? club.pointsLoss : -2;
+      document.getElementById('cfgReg').checked = !!club.registrationOpen;
+      var rows = ((SETTINGS && SETTINGS.ranks) || []).map(function (rk) {
+        return '<div class="flex items-center gap-2">' +
+          '<span class="w-6 h-6 rounded bg-slate-600 text-white font-label-sm text-xs font-bold flex items-center justify-center shrink-0">' +
+          esc(rk.name) + '</span>' +
+          '<input class="w-16 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 rk-min" data-id="' + rk.id + '" type="number" min="0" value="' + (rk.minPoints != null ? rk.minPoints : 0) + '" />' +
+          '<span class="text-slate-400 text-xs">s/d</span>' +
+          '<input class="w-16 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 rk-max" data-id="' + rk.id + '" type="number" min="0" placeholder="∞" value="' + (rk.maxPoints != null ? rk.maxPoints : '') + '" />' +
+          '<span class="font-label-sm text-[10px] text-slate-500">Pts</span>' +
+          '</div>';
+      }).join('');
+      document.getElementById('rankRows').innerHTML = rows ||
+        '<p class="font-body-sm text-[11px] text-slate-400">Belum ada pengaturan rank.</p>';
+      openModal('modalRank');
+    });
+
+    var btnSaveRankCfg = document.getElementById('btnSaveRankCfg');
+    if (btnSaveRankCfg) btnSaveRankCfg.addEventListener('click', function () {
+      var win = parseInt(document.getElementById('cfgWin').value, 10);
+      var loss = parseInt(document.getElementById('cfgLoss').value, 10);
+      if (isNaN(win) || win < 0) return showAdminToast('Poin menang tidak valid');
+      if (isNaN(loss) || loss > 0) return showAdminToast('Poin kalah tidak valid (harus ≤ 0)');
+      btnSaveRankCfg.disabled = true;
+      api.patch('/settings', {
+        pointsWin: win,
+        pointsLoss: loss,
+        registrationOpen: document.getElementById('cfgReg').checked,
+      }).then(function () {
+        var mins = {}, maxs = {};
+        document.querySelectorAll('#rankRows .rk-min').forEach(function (i) { mins[i.getAttribute('data-id')] = i.value; });
+        document.querySelectorAll('#rankRows .rk-max').forEach(function (i) { maxs[i.getAttribute('data-id')] = i.value; });
+        var tasks = ((SETTINGS && SETTINGS.ranks) || []).map(function (rk) {
+          var min = parseInt(mins[rk.id], 10);
+          var maxRaw = maxs[rk.id];
+          var max = maxRaw === '' || maxRaw == null ? null : parseInt(maxRaw, 10);
+          if (isNaN(min)) return Promise.resolve();
+          return api.patch('/settings/ranks/' + rk.id, { minPoints: min, maxPoints: max });
+        });
+        return Promise.all(tasks);
+      }).then(function () {
+        closeModal('modalRank');
+        showAdminToast('Pengaturan poin & rank diperbarui');
+        loadSettings();
+        loadMembers(true);
+        loadMembersCache();
+        updateCalc();
+      }).catch(function (e) {
+        showAdminToast(e.message || 'Gagal menyimpan pengaturan');
+        loadSettings();
+      }).then(function () { btnSaveRankCfg.disabled = false; });
+    });
+
+    // ============================================================
+    // Jadwal latihan
+    // ============================================================
+    var btnSaveTraining = document.getElementById('btnSaveTraining');
+    if (btnSaveTraining) btnSaveTraining.addEventListener('click', function () {
+      var days = Array.prototype.slice.call(document.querySelectorAll('.train-day:checked')).map(function (i) { return i.value; });
+      var payload = {
+        trainingDays: days.join(','),
+        trainingStart: document.getElementById('trainStart').value,
+        trainingEnd: document.getElementById('trainEnd').value,
+        trainingLocation: (document.getElementById('trainLocation').value || '').trim(),
+        trainingMapUrl: (document.getElementById('trainMap').value || '').trim() || null,
+      };
+      if (!days.length) return showAdminToast('Pilih minimal satu hari latihan');
+      if (!payload.trainingStart || !payload.trainingEnd) return showAdminToast('Jam mulai & selesai wajib diisi');
+      if (payload.trainingLocation.length < 2) return showAdminToast('Lokasi latihan wajib diisi');
+      btnSaveTraining.disabled = true;
+      api.patch('/settings', payload).then(function () {
+        showAdminToast('Jadwal latihan diperbarui');
+        return loadSettings();
+      }).catch(function (e) {
+        showAdminToast(e.message || 'Gagal menyimpan jadwal');
+      }).then(function () { btnSaveTraining.disabled = false; });
+    });
+
+    // ============================================================
+    // Manajemen galeri
+    // ============================================================
+    function loadGalleryAdmin(reset) {
+      if (reset) GAL_PAGE = 1;
+      var box = document.getElementById('galleryAdminList');
+      if (!box) return;
+      if (reset) PBUI.setLoading(box, 'Memuat galeri...');
+      var url = '/gallery/all?page=' + GAL_PAGE + '&limit=8' +
+        (GAL_CAT !== 'ALL' ? '&category=' + GAL_CAT : '');
+      api.get(url).then(function (r) {
+        var items = (r && r.items) || [];
+        var pg = (r && r.pagination) || {};
+        GAL_TOTAL_PAGES = pg.totalPages || 1;
+        GAL_ROWS = {};
+        items.forEach(function (g) { GAL_ROWS[g.id] = g; });
+        var html = items.map(galleryAdminRow).join('');
+        if (reset) box.innerHTML = html;
+        else box.insertAdjacentHTML('beforeend', html);
+        if (reset && !items.length) PBUI.showEmpty(box, 'Belum ada foto', 'photo_library');
+        toggleEl(document.getElementById('galleryAdminMore'), GAL_PAGE < GAL_TOTAL_PAGES);
+      }).catch(function (e) {
+        PBUI.showError(box, e && e.message, function () { loadGalleryAdmin(true); });
+      });
+    }
+
+    function galleryAdminRow(g) {
+      var cat = g.category === 'SPARING' ? 'Sparing' : g.category === 'UMUM' ? 'Umum' : 'Mabar';
+      var chip = g.isPublished
+        ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200">Terbit</span>'
+        : '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200">Draf</span>';
+      return '<div class="bg-slate-50 rounded-xl p-3 border border-slate-200 flex items-center gap-3">' +
+        '<img alt="" class="h-12 w-12 rounded-lg object-cover border border-slate-200 shrink-0" src="' + esc(g.imageUrl) + '" />' +
+        '<div class="min-w-0 flex-1">' +
+        '<p class="font-body-sm text-xs font-bold text-slate-900 truncate">' + esc(g.title) + ' ' + chip + '</p>' +
+        '<p class="font-body-sm text-[11px] text-slate-500 truncate">' + esc(cat) + ' • ' + esc(PBUI.fmtDate(g.createdAt)) + '</p>' +
+        '</div>' +
+        '<div class="flex items-center gap-1.5 shrink-0">' +
+        '<button class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors" title="Ubah" type="button" onclick="openGalleryEdit(\'' + g.id + '\')"><span class="material-symbols-outlined text-[15px]">edit</span></button>' +
+        '<button class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-rose-600 hover:bg-rose-50 transition-colors" title="Hapus" type="button" onclick="deleteGallery(\'' + g.id + '\')"><span class="material-symbols-outlined text-[15px]">delete</span></button>' +
+        '</div></div>';
+    }
+
+    var galChips = document.querySelectorAll('#galleryFilterChips button');
+    galChips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        galChips.forEach(function (c) {
+          c.className = 'px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-label-sm text-xs font-bold';
+        });
+        chip.className = 'px-2.5 py-1 rounded-lg bg-blue-600 text-white font-label-sm text-xs font-bold';
+        GAL_CAT = chip.getAttribute('data-cat') || 'ALL';
+        loadGalleryAdmin(true);
+      });
+    });
+
+    var galleryAdminMoreBtn = document.getElementById('galleryAdminMore');
+    if (galleryAdminMoreBtn) galleryAdminMoreBtn.addEventListener('click', function () {
+      GAL_PAGE++;
+      loadGalleryAdmin(false);
+    });
+
+    var btnAddGallery = document.getElementById('btnAddGallery');
+    if (btnAddGallery) btnAddGallery.addEventListener('click', function () {
+      GAL_ID = null;
+      setEl('galModalTitle', 'Tambah Foto');
+      document.getElementById('galTitle').value = '';
+      document.getElementById('galDesc').value = '';
+      document.getElementById('galCategory').value = 'MABAR';
+      document.getElementById('galPublished').value = 'true';
+      document.getElementById('galImage').value = '';
+      setEl('galHint', 'Foto wajib dipilih untuk item baru.');
+      openModal('modalGallery');
+    });
+
+    function openGalleryEdit(id) {
+      var g = GAL_ROWS[id];
+      if (!g) return;
+      GAL_ID = id;
+      setEl('galModalTitle', 'Ubah Foto');
+      document.getElementById('galTitle').value = g.title || '';
+      document.getElementById('galDesc').value = g.description || '';
+      document.getElementById('galCategory').value = g.category || 'MABAR';
+      document.getElementById('galPublished').value = g.isPublished ? 'true' : 'false';
+      document.getElementById('galImage').value = '';
+      setEl('galHint', 'Biarkan kosong jika tidak ingin mengganti foto.');
+      openModal('modalGallery');
+    }
+
+    var btnSaveGallery = document.getElementById('btnSaveGallery');
+    if (btnSaveGallery) btnSaveGallery.addEventListener('click', function () {
+      var title = (document.getElementById('galTitle').value || '').trim();
+      if (title.length < 3) return showAdminToast('Judul minimal 3 karakter');
+      var file = document.getElementById('galImage').files[0];
+      if (!GAL_ID && !file) return showAdminToast('Pilih foto terlebih dahulu');
+      var fd = new FormData();
+      fd.append('title', title);
+      fd.append('description', (document.getElementById('galDesc').value || '').trim());
+      fd.append('category', document.getElementById('galCategory').value);
+      fd.append('isPublished', document.getElementById('galPublished').value);
+      if (file) fd.append('image', file);
+      btnSaveGallery.disabled = true;
+      var req = GAL_ID ? api.patch('/gallery/' + GAL_ID, fd) : api.post('/gallery', fd);
+      req.then(function () {
+        closeModal('modalGallery');
+        showAdminToast(GAL_ID ? 'Foto diperbarui' : 'Foto ditambahkan');
+        loadGalleryAdmin(true);
+      }).catch(function (e) {
+        showAdminToast(e.message || 'Gagal menyimpan foto');
+      }).then(function () { btnSaveGallery.disabled = false; });
+    });
+
+    function deleteGallery(id) {
+      var g = GAL_ROWS[id];
+      PBUI.confirmDialog('Hapus foto "' + (g ? g.title : '') + '"? Tindakan ini tidak bisa dibatalkan.', {
+        confirmText: 'Ya, Hapus', danger: true,
+      }).then(function (ok) {
+        if (!ok) return;
+        api.del('/gallery/' + id).then(function () {
+          showAdminToast('Foto dihapus');
+          loadGalleryAdmin(true);
+        }).catch(function (e) {
+          showAdminToast(e.message || 'Gagal menghapus foto');
+        });
+      });
+    }
+  </script>
+</body>
+</html>

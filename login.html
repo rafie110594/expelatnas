@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a56db" />
+  <title>Masuk Admin - PB EX PELATNAS</title>
+  <link rel="icon" href="assets/logo-round.png" type="image/png" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" crossorigin rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/theme.css" />
+  <link rel="stylesheet" href="assets/splash.css" />
+  <style>
+    html, body { background: #050f38; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+  </style>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/ui.js"></script>
+</head>
+<body class="min-h-screen antialiased">
+  <div id="pbSplash" class="pb-splash" role="status" aria-live="polite" aria-label="Memuat situs PB EX PELATNAS"></div>
+  <script src="assets/splash.js"></script>
+  <div class="pb-auth-bg fixed inset-0"></div>
+  <div class="fixed -top-24 -right-24 h-96 w-96 rounded-full bg-sky-400/20 blur-3xl"></div>
+  <div class="fixed -bottom-32 -left-24 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl"></div>
+
+  <main class="relative min-h-screen flex items-center justify-center p-4 py-10">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-6">
+        <a href="index.html" class="inline-block"><img src="assets/logo-round.png" alt="Logo PB Ex Pelatnas" class="h-16 w-16 rounded-full mx-auto shadow-2xl shadow-blue-950/40 ring-4 ring-white/10" /></a>
+        <h1 class="font-display text-2xl font-bold text-white mt-4 tracking-tight">Admin PB EX PELATNAS</h1>
+        <p class="text-[12px] text-blue-200 mt-1">Panel pengurus klub</p>
+      </div>
+
+      <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-2xl shadow-blue-950/40 border border-white/50">
+        <div class="mb-5">
+          <h2 class="font-display text-lg font-bold">Masuk admin</h2>
+          <p class="text-[12px] text-slate-500 mt-0.5">Kelola skor, poin, anggota, dan agenda klub.</p>
+        </div>
+
+        <div id="loginError" class="hidden mb-4 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-3 text-[12px] font-semibold text-rose-700"></div>
+
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label for="email" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Email admin</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[19px] text-slate-400">admin_panel_settings</span>
+              <input id="email" name="email" type="email" autocomplete="email" required placeholder="admin@pbexpelatnas.id" class="w-full h-11 pl-11 pr-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white transition-colors" />
+            </div>
+          </div>
+          <div>
+            <label for="password" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Kata sandi</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[19px] text-slate-400">lock</span>
+              <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="Masukkan kata sandi" class="w-full h-11 pl-11 pr-11 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white transition-colors" />
+              <button type="button" id="togglePwd" class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg hover:bg-slate-100 grid place-items-center text-slate-400" aria-label="Tampilkan kata sandi"><span class="material-symbols-outlined text-[19px]">visibility</span></button>
+            </div>
+          </div>
+          <button type="submit" id="btnLogin" class="w-full h-11 rounded-xl pb-btn text-[12px] font-bold disabled:opacity-60 transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-[19px]">login</span>
+            <span>Masuk panel admin</span>
+          </button>
+        </form>
+
+        <div class="mt-6 pt-5 border-t border-slate-100 text-center">
+          <p class="text-[11px] text-slate-400">Bukan pengurus? <a href="member-login.html" class="font-bold text-blue-600 hover:text-blue-800">Masuk sebagai anggota</a></p>
+        </div>
+      </div>
+      <p class="text-center text-[11px] text-blue-200/70 mt-5"><a href="index.html" class="hover:text-white">Kembali ke beranda</a></p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('loginForm');
+      var btn = document.getElementById('btnLogin');
+      var errorBox = document.getElementById('loginError');
+
+      Session.init().then(function (u) {
+        if (u) window.location.replace(u.role === 'ADMIN' ? 'admin.html' : 'member.html');
+      }).catch(function () {});
+
+      document.getElementById('togglePwd').addEventListener('click', function () {
+        var input = document.getElementById('password');
+        var icon = this.querySelector('.material-symbols-outlined');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.textContent = 'visibility_off';
+        } else {
+          input.type = 'password';
+          icon.textContent = 'visibility';
+        }
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errorBox.classList.add('hidden');
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value;
+        btn.disabled = true;
+        btn.querySelector('span:last-child').textContent = 'MEMPROSES...';
+
+        Session.login(email, password).then(function (user) {
+          if (user.role !== 'ADMIN') {
+            errorBox.textContent = 'Akun ini bukan admin klub.';
+            errorBox.classList.remove('hidden');
+            btn.disabled = false;
+            btn.querySelector('span:last-child').textContent = 'Masuk panel admin';
+            return;
+          }
+          window.location.replace('admin.html');
+        }).catch(function (err) {
+          errorBox.textContent = (err && err.message) || 'Email atau kata sandi salah.';
+          errorBox.classList.remove('hidden');
+          btn.disabled = false;
+          btn.querySelector('span:last-child').textContent = 'Masuk panel admin';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

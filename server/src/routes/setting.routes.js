@@ -7,6 +7,7 @@ const router = require('express').Router();
 
 const controller = require('../controllers/setting.controller');
 const validate = require('../middlewares/validate');
+const { publicCache } = require('../middlewares/publicCache');
 const { requireAuth, requireRole } = require('../middlewares/auth.middleware');
 const {
   updateSettingsSchema,
@@ -18,14 +19,14 @@ const adminOnly = [requireAuth, requireRole('ADMIN')];
 
 // --- Pengaturan klub ---
 // GET /api/settings — publik (info klub + daftar rank)
-router.get('/', controller.getSettings);
+router.get('/', publicCache(60, 300), controller.getSettings);
 
 // PATCH /api/settings — admin (aturan poin, registrasi, tie-break, dll)
 router.patch('/', ...adminOnly, validate(updateSettingsSchema), controller.updateSettings);
 
 // --- Rentang rank ---
 // GET /api/settings/ranks — publik
-router.get('/ranks', controller.listRanks);
+router.get('/ranks', publicCache(60, 300), controller.listRanks);
 
 // POST /api/settings/ranks — admin, tervalidasi anti tumpang-tindih
 router.post('/ranks', ...adminOnly, validate(createRankSchema), controller.createRank);

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Avatar wanita">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#ffedd5"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="44" fill="url(#bg)"/>
+  <path d="M54 96c0-34 20-58 46-58s46 24 46 58v24H54z" fill="#13235c"/>
+  <circle cx="100" cy="82" r="36" fill="#f2c6a0"/>
+  <path d="M64 58c8-14 20-22 36-22s28 8 36 22c-8 4-18 6-36 6s-28-2-36-6z" fill="#13235c"/>
+  <path d="M44 200c3-42 25-68 56-68s53 26 56 68z" fill="#fc6703"/>
+  <path d="M78 134c6 8 14 12 22 12s16-4 22-12l-8 24H86z" fill="#ffffff" opacity=".9"/>
+  <circle cx="87" cy="84" r="3.5" fill="#13235c"/>
+  <circle cx="113" cy="84" r="3.5" fill="#13235c"/>
+  <path d="M92 100c5 4 11 4 16 0" fill="none" stroke="#b45f3f" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="54" cy="112" r="5" fill="#ffd166"/>
+  <circle cx="146" cy="112" r="5" fill="#ffd166"/>
+</svg>

@@ -7,6 +7,7 @@ const router = require('express').Router();
 
 const controller = require('../controllers/event.controller');
 const validate = require('../middlewares/validate');
+const { publicCache } = require('../middlewares/publicCache');
 const { upload } = require('../middlewares/upload');
 const { requireAuth, requireRole, optionalAuth } = require('../middlewares/auth.middleware');
 const {
@@ -18,7 +19,7 @@ const {
 const adminOnly = [requireAuth, requireRole('ADMIN')];
 
 // GET /api/events — publik, hanya PUBLISHED (?time=upcoming|past)
-router.get('/', validate(listQuerySchema, 'query'), controller.list);
+router.get('/', publicCache(60, 300), validate(listQuerySchema, 'query'), controller.list);
 
 // GET /api/events/all — admin, semua status (?status=DRAFT|PUBLISHED)
 router.get('/all', ...adminOnly, validate(listQuerySchema, 'query'), controller.listAdmin);
@@ -33,7 +34,7 @@ router.post(
 );
 
 // GET /api/events/:id — terbit = publik, DRAFT = admin saja
-router.get('/:id', optionalAuth, controller.detail);
+router.get('/:id', publicCache(60, 300), optionalAuth, controller.detail);
 
 // PATCH /api/events/:id — admin (ubah data / status / banner)
 router.patch(

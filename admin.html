@@ -234,16 +234,6 @@
           <span class="font-label-sm text-[11px] bg-blue-50 text-blue-700 font-semibold px-2.5 py-0.5 rounded-full border border-blue-200/60">LIGA REGULER</span>
         </div>
 
-        <!-- Match Mode Switcher -->
-        <div class="grid grid-cols-2 p-1 bg-slate-100/80 rounded-xl border border-slate-200">
-          <button class="py-2 rounded-lg font-label-md text-xs font-semibold text-slate-600 transition-all hover:text-slate-900 flex items-center justify-center gap-1.5" id="btn-mode-single" type="button">
-            <span class="material-symbols-outlined text-[16px]">person</span> Single (Tunggal)
-          </button>
-          <button class="py-2 rounded-lg font-label-md text-xs font-bold bg-white text-blue-700 shadow-xs border border-slate-200/60 transition-all flex items-center justify-center gap-1.5" id="btn-mode-doubles" type="button">
-            <span class="material-symbols-outlined text-[16px]">group</span> Ganda (Doubles)
-          </button>
-        </div>
-
         <!-- Date, Time & Court Selector -->
         <div class="grid grid-cols-2 gap-2.5">
           <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200/70">
@@ -596,6 +586,10 @@
               <option value="PEREMPUAN">Perempuan</option>
             </select>
           </div>
+          <div>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Tanggal Lahir (opsional)</label>
+            <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memBirthDate" type="date" />
+          </div>
           <div class="mem-create-only">
             <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Email</label>
             <input class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500" id="memEmail" type="email" />
@@ -684,7 +678,7 @@
             </select>
           </div>
           <div>
-            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Banner (opsional, maks. 5MB)</label>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Banner (opsional, maks. 3MB)</label>
             <input class="block w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-slate-100 file:text-slate-700 file:font-bold file:text-xs" id="evImage" accept="image/jpeg,image/png,image/webp,image/gif" type="file" />
           </div>
           <label class="ev-edit-only hidden flex items-center gap-2 text-xs text-slate-700 font-medium">
@@ -729,7 +723,7 @@
             </div>
           </div>
           <div>
-            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Foto (maks. 5MB)</label>
+            <label class="block font-label-sm text-[11px] font-bold text-slate-600 mb-1">Foto (maks. 3MB)</label>
             <input class="block w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-slate-100 file:text-slate-700 file:font-bold file:text-xs" id="galImage" accept="image/jpeg,image/png,image/webp,image/gif" type="file" />
           </div>
           <p class="font-body-sm text-[11px] text-slate-500" id="galHint"></p>
@@ -811,7 +805,6 @@
     // ============================================================
     var SETTINGS = null;   // { club, ranks, stats }
     var MEMBERS = [];      // cache member aktif (dropdown pemain)
-    var MATCH_TYPE = 'DOUBLES';
     var MEM_ROWS = {};     // baris member terakhir dirender (id -> item)
     var EV_ROWS = {};      // baris agenda terakhir dirender
     var MEM_PAGE = 1, MEM_TOTAL_PAGES = 1, MEM_QUERY = '';
@@ -958,12 +951,11 @@
     }
 
     function chosenPlayers() {
-      var d = MATCH_TYPE === 'DOUBLES';
       var g = function (id) {
         var s = document.getElementById(id);
         return s && s.value ? [s.value] : [];
       };
-      return { A: g('teamA1').concat(d ? g('teamA2') : []), B: g('teamB1').concat(d ? g('teamB2') : []) };
+      return { A: g('teamA1').concat(g('teamA2')), B: g('teamB1').concat(g('teamB2')) };
     }
 
     function adjustScore(inputId, delta) {
@@ -1045,34 +1037,6 @@
         '</div><div class="flex items-center gap-2 font-label-md text-xs shrink-0">' + right + '</div></div>';
     }
 
-    // Toggle Singles vs Doubles
-    var btnSingle = document.getElementById('btn-mode-single');
-    var btnDoubles = document.getElementById('btn-mode-doubles');
-    var p2A = document.getElementById('team-a-player-2');
-    var p2B = document.getElementById('team-b-player-2');
-
-    var MODE_ON = 'py-2 rounded-lg font-label-md text-xs font-bold bg-white text-blue-700 shadow-xs border border-slate-200/60 transition-all flex items-center justify-center gap-1.5';
-    var MODE_OFF = 'py-2 rounded-lg font-label-md text-xs font-semibold text-slate-600 transition-all hover:text-slate-900 flex items-center justify-center gap-1.5';
-
-    if (btnSingle && btnDoubles) {
-      btnSingle.addEventListener('click', function () {
-        MATCH_TYPE = 'SINGLE';
-        btnSingle.className = MODE_ON;
-        btnDoubles.className = MODE_OFF;
-        if (p2A) p2A.classList.add('hidden');
-        if (p2B) p2B.classList.add('hidden');
-        updateCalc();
-      });
-      btnDoubles.addEventListener('click', function () {
-        MATCH_TYPE = 'DOUBLES';
-        btnDoubles.className = MODE_ON;
-        btnSingle.className = MODE_OFF;
-        if (p2A) p2A.classList.remove('hidden');
-        if (p2B) p2B.classList.remove('hidden');
-        updateCalc();
-      });
-    }
-
     ['teamA1', 'teamA2', 'teamB1', 'teamB2'].forEach(function (id) {
       var sel = document.getElementById(id);
       if (sel) sel.addEventListener('change', function () {
@@ -1127,14 +1091,14 @@
       var sb = scoreVal('scoreB');
       var sides = chosenPlayers();
       if (title.length < 3) return showAdminToast('Judul laga minimal 3 karakter');
-      if (!sides.A.length || !sides.B.length) return showAdminToast('Pilih minimal 1 pemain tiap sisi');
+      if (sides.A.length !== 2 || sides.B.length !== 2) return showAdminToast('Pilih 2 pemain di setiap tim');
       var all = sides.A.concat(sides.B);
       if (new Set(all).size !== all.length) return showAdminToast('Pemain tidak boleh di kedua sisi');
       if (isNaN(sa) || isNaN(sb) || sa < 0 || sb < 0) return showAdminToast('Skor wajib diisi');
       if (sa === sb) return showAdminToast('Skor tidak boleh seri');
       var payload = {
         title: title,
-        matchType: MATCH_TYPE,
+        matchType: 'DOUBLES',
         teamA: sides.A,
         teamB: sides.B,
         teamAScore: sa,
@@ -1191,7 +1155,7 @@
       var enc = encodeURIComponent(m.title || 'Pertandingan').replace(/'/g, '%27');
       return '<div class="bg-slate-50 rounded-xl p-3 space-y-2 border border-slate-200">' +
         '<div class="flex items-center justify-between text-slate-500 font-label-sm text-[11px]">' +
-        '<span>' + esc(m.matchType) + ' • ' + esc(when) + '</span>' + chip + '</div>' +
+        '<span>Ganda • ' + esc(when) + '</span>' + chip + '</div>' +
         '<div class="flex items-center justify-between">' +
         '<div class="space-y-0.5 min-w-0 pr-2">' +
         '<p class="font-body-sm text-xs text-slate-900 font-bold truncate">' + esc(a) + '</p>' +
@@ -1319,6 +1283,7 @@
       document.getElementById('memName').value = '';
       document.getElementById('memAlias').value = '';
       document.getElementById('memGender').value = '';
+      document.getElementById('memBirthDate').value = '';
       document.getElementById('memEmail').value = '';
       document.getElementById('memPassword').value = '';
       document.getElementById('memPhone').value = '';
@@ -1334,6 +1299,7 @@
       document.getElementById('memName').value = mb.fullName || '';
       document.getElementById('memAlias').value = mb.alias || '';
       document.getElementById('memGender').value = mb.gender || '';
+      document.getElementById('memBirthDate').value = mb.birthDate ? String(mb.birthDate).slice(0, 10) : '';
       document.getElementById('memPhone').value = mb.phone || '';
       document.getElementById('memStatus').value = mb.status || 'ACTIVE';
       openModal('modalMember');
@@ -1344,6 +1310,7 @@
       var name = (document.getElementById('memName').value || '').trim();
       var alias = (document.getElementById('memAlias').value || '').trim();
       var gender = document.getElementById('memGender').value || null;
+      var birthDate = document.getElementById('memBirthDate').value || '';
       var phone = (document.getElementById('memPhone').value || '').trim();
       if (name.length < 2) return showAdminToast('Nama minimal 2 karakter');
       btnSaveMember.disabled = true;
@@ -1357,14 +1324,15 @@
         if (pass.length < 8) return showAdminToast('Kata sandi minimal 8 karakter');
         if (isNaN(ip) || ip < 0) return showAdminToast('Poin awal tidak valid');
         req = api.post('/members', {
-          fullName: name, alias: alias || null, gender: gender, email: email, password: pass,
-          initialPoints: ip, phone: phone || undefined,
+          fullName: name, alias: alias || null, gender: gender, birthDate: birthDate || undefined,
+          email: email, password: pass, initialPoints: ip, phone: phone || undefined,
         });
       } else {
         req = api.patch('/members/' + MEM_ID, {
           fullName: name,
           alias: alias || null,
           gender: gender,
+          birthDate: birthDate || null,
           phone: phone || null,
           status: document.getElementById('memStatus').value,
         });

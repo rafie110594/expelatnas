@@ -15,12 +15,10 @@ const scorePair = {
 const teams = {
   teamA: z
     .array(z.string().trim().min(1))
-    .min(1, 'Tim A minimal 1 pemain')
-    .max(2, 'Tim A maksimal 2 pemain'),
+    .length(2, 'Tim A harus berisi 2 pemain'),
   teamB: z
     .array(z.string().trim().min(1))
-    .min(1, 'Tim B minimal 1 pemain')
-    .max(2, 'Tim B maksimal 2 pemain'),
+    .length(2, 'Tim B harus berisi 2 pemain'),
 };
 
 const noOverlap = (d) => {
@@ -31,7 +29,7 @@ const noOverlap = (d) => {
 const createMatchSchema = z
   .object({
     title: z.string().trim().min(3, 'Judul minimal 3 karakter').max(160),
-    matchType: z.enum(['SINGLE', 'DOUBLES', 'CLUB']).default('DOUBLES'),
+    matchType: z.enum(['DOUBLES']).default('DOUBLES'),
     scheduledAt: z.string().datetime({ offset: true }).optional(),
     ...teams,
     ...scorePair,

@@ -20,13 +20,7 @@ const registerSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Format tanggal harus YYYY-MM-DD')
     .optional(),
-  // Profil olahraga (opsional — sesuai formulir registrasi klub)
   gender: z.enum(['LAKI_LAKI', 'PEREMPUAN']).optional(),
-  genderCategory: z.enum(['ganda_putra', 'ganda_putri']).optional(),
-  doublesRole: z.enum(['playmaker', 'smasher', 'allrounder']).optional(),
-  dominantHand: z.enum(['kanan', 'kiri']).optional(),
-  background: z.enum(['pelatnas', 'semipro', 'komunitas']).optional(),
-  racket: z.string().trim().max(120).optional(),
 });
 
 const changePasswordSchema = z.object({

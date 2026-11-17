@@ -7,6 +7,7 @@ const router = require('express').Router();
 
 const controller = require('../controllers/gallery.controller');
 const validate = require('../middlewares/validate');
+const { publicCache } = require('../middlewares/publicCache');
 const { upload } = require('../middlewares/upload');
 const { requireAuth, requireRole, optionalAuth } = require('../middlewares/auth.middleware');
 const {
@@ -18,7 +19,7 @@ const {
 const adminOnly = [requireAuth, requireRole('ADMIN')];
 
 // GET /api/gallery — publik, hanya item terbit
-router.get('/', validate(listQuerySchema, 'query'), controller.list);
+router.get('/', publicCache(60, 300), validate(listQuerySchema, 'query'), controller.list);
 
 // GET /api/gallery/all — admin, semua item (filter ?published=true|false)
 router.get('/all', ...adminOnly, validate(listQuerySchema, 'query'), controller.listAdmin);
@@ -33,7 +34,7 @@ router.post(
 );
 
 // GET /api/gallery/:id — terbit = publik, belum terbit = admin saja
-router.get('/:id', optionalAuth, controller.detail);
+router.get('/:id', publicCache(60, 300), optionalAuth, controller.detail);
 
 // PATCH /api/gallery/:id — admin, gambar boleh diganti (opsional)
 router.patch(

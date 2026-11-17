@@ -18,7 +18,20 @@ async function buildStandings() {
   const [users, parts, settings, ranks] = await Promise.all([
     prisma.user.findMany({
       where: { role: 'MEMBER', status: 'ACTIVE' },
-      include: { profile: true },
+      select: {
+        id: true,
+        fullName: true,
+        alias: true,
+        gender: true,
+        profile: {
+          select: {
+            memberNumber: true,
+            photoUrl: true,
+            currentPoints: true,
+            dateJoined: true,
+          },
+        },
+      },
     }),
     // Semua partisipasi match selesai — untuk hitung kemenangan (tie-break)
     prisma.matchParticipant.findMany({
@@ -52,6 +65,7 @@ async function buildStandings() {
       memberNumber: u.profile.memberNumber,
       fullName: u.fullName,
       alias: u.alias || null,
+      gender: u.gender,
       photoUrl: u.profile.photoUrl,
       currentPoints: u.profile.currentPoints,
       rank: resolveRank(u.profile.currentPoints, ranks),

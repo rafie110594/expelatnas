@@ -32,7 +32,7 @@ const env = {
     dir: process.env.UPLOAD_DIR
       ? path.resolve(process.env.UPLOAD_DIR)
       : path.join(__dirname, '..', '..', 'uploads'),
-    maxBytes: Math.max(1, Number(process.env.MAX_UPLOAD_MB || 5)) * 1024 * 1024,
+    maxBytes: Math.max(1, Number(process.env.MAX_UPLOAD_MB || 3)) * 1024 * 1024,
     // URL publik asal server — dipakai membangun imageUrl absolut
     publicBaseUrl: (process.env.PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 4000}`)
       .replace(/\/+$/, ''),

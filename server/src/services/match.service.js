@@ -90,7 +90,7 @@ async function create(input, actor) {
       const match = await tx.match.create({
         data: {
           title: input.title,
-          matchType: input.matchType,
+          matchType: 'DOUBLES',
           status: 'COMPLETED',
           scheduledAt: input.scheduledAt ? new Date(input.scheduledAt) : null,
           teamAScore: input.teamAScore,

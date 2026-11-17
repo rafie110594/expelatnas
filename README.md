@@ -20,7 +20,7 @@ Fitur utama:
 - **Leaderboard publik** — urut poin, tie-break konsisten (menang → senioritas
   → nomor member), posisi global sebelum paginasi, pencarian & filter rank,
   hanya field aman publik, member `INACTIVE` dikeluarkan.
-- **Galeri & Agenda** — CRUD dengan upload gambar (multipart, maks. 5MB,
+- **Galeri & Agenda** — CRUD dengan upload gambar (multipart, maks. 3MB,
   jpeg/png/webp/gif), kategori galeri `MABAR`/`SPARING`/`UMUM`, status
   draf/terbit, agenda mendatang & selesai.
 - **Jadwal latihan** — hari, jam mulai/selesai, lokasi, dan tautan peta
@@ -121,7 +121,7 @@ untuk mendemonstrasikan reversal), 3 agenda, dan 1 foto galeri ikut di-seed.
 | `JWT_ACCESS_TTL` / `JWT_REFRESH_TTL` | – | default `15m` / `7d` |
 | `CORS_ORIGIN` | – | Origin frontend (pisahkan dengan koma) |
 | `STORAGE_DRIVER` | – | `local` (default) atau `cloudinary` |
-| `UPLOAD_DIR` / `MAX_UPLOAD_MB` | – | Lokasi & batas upload (default 5MB) |
+| `UPLOAD_DIR` / `MAX_UPLOAD_MB` | – | Lokasi & batas upload (default 3MB) |
 | `PUBLIC_BASE_URL` | – | Asal server untuk URL gambar absolut |
 | `CLOUDINARY_URL` | – | Wajib bila `STORAGE_DRIVER=cloudinary` |
 | `SEED_*` | – | Akun yang dibuat `npm run db:seed` |

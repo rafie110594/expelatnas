@@ -81,9 +81,9 @@ Login / register / refresh merespons:
 | PATCH | `/api/members/me/profile` | login | Edit profil sendiri (tanpa poin/status/nomor) |
 | POST | `/api/members/me/photo` | login | Multipart field `photo` — foto profil |
 | GET | `/api/members` | ADMIN | Query: `search, rank (D\|C\|B\|A\|NONE), status (ACTIVE\|INACTIVE), page, limit` |
-| POST | `/api/members` | ADMIN | `{ fullName, email, password, initialPoints?, phone?, …profil }` |
+| POST | `/api/members` | ADMIN | `{ fullName, email, password, initialPoints?, gender?, birthDate?, phone? }` |
 | GET | `/api/members/:id` | ADMIN | Detail member + ledger poin |
-| PATCH | `/api/members/:id` | ADMIN | `{ fullName?, status?, phone?, …profil nullish }` |
+| PATCH | `/api/members/:id` | ADMIN | `{ fullName?, status?, gender?, birthDate?, phone? }` — nullish |
 | POST | `/api/members/:id/points` | ADMIN | `{ delta, reason }` — penyesuaian manual (tercatat di ledger, `delta ≠ 0`) |
 
 Item daftar member:
@@ -91,7 +91,8 @@ Item daftar member:
 ```json
 {
   "id": "…", "memberNumber": "PB-0004", "fullName": "…", "email": "…",
-  "phone": "…", "status": "ACTIVE", "currentPoints": 68,
+  "phone": "…", "gender": "LAKI_LAKI", "birthDate": "1996-10-20T00:00:00.000Z",
+  "status": "ACTIVE", "currentPoints": 68,
   "rank": { "id": "…", "name": "B", "minPoints": 50, "maxPoints": 79, "order": 3, "isActive": true }
 }
 ```
@@ -115,10 +116,10 @@ boleh di dua tim):
 POST /api/matches
 {
   "title": "Laga Placement Kamis",
-  "matchType": "SINGLE",            // SINGLE | DOUBLES | CLUB
+  "matchType": "DOUBLES",            // hanya DOUBLES
   "scheduledAt": "2026-10-15T20:30:00+07:00",   // opsional
-  "teamA": ["<memberId>"],          // 1–2 pemain (id user)
-  "teamB": ["<memberId>"],
+  "teamA": ["<memberId>", "<memberId>"],        // tepat 2 pemain
+  "teamB": ["<memberId>", "<memberId>"],
   "teamAScore": 21,
   "teamBScore": 15
 }
@@ -185,7 +186,7 @@ Jadwal latihan: `trainingDays` berupa daftar hari dipisah koma
 |---|---|---|---|
 | GET | `/api/gallery` | publik | Hanya item terbit; `page, limit, search, category (MABAR\|SPARING\|UMUM)` |
 | GET | `/api/gallery/all` | ADMIN | Semua item; filter `published=true\|false`, `category` |
-| POST | `/api/gallery` | ADMIN | Multipart: `image` (wajib, ≤5MB, jpeg/png/webp/gif), `title`, `description?`, `category (MABAR\|SPARING\|UMUM, default MABAR)`, `isPublished ('true'\|'false')` |
+| POST | `/api/gallery` | ADMIN | Multipart: `image` (wajib, ≤3MB, jpeg/png/webp/gif), `title`, `description?`, `category (MABAR\|SPARING\|UMUM, default MABAR)`, `isPublished ('true'\|'false')` |
 | GET | `/api/gallery/:id` | publik* | Item terbit bebas; draf hanya ADMIN |
 | PATCH | `/api/gallery/:id` | ADMIN | JSON `{ title?, description?, category?, isPublished? }` atau multipart + `image` (ganti gambar) |
 | DELETE | `/api/gallery/:id` | ADMIN | Hapus record + file gambar |
@@ -218,7 +219,7 @@ Waktu memakai ISO-8601 ber-offset (`2026-11-02T19:30:00+07:00` atau `Z`);
 
 ## Batas & pesan umum
 
-- **Upload gambar**: maks. `MAX_UPLOAD_MB` (default 5MB), MIME diizinkan
+- **Upload gambar**: maks. `MAX_UPLOAD_MB` (default 3MB), MIME diizinkan
   `jpeg, png, webp, gif` (SVG ditolak); nama file dihasilkan server.
 - **Skor**: integer 0–999, tidak boleh seri.
 - **Pesan error** berbahasa Indonesia, mis. `"Skor tidak boleh seri — harus

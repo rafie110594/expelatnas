@@ -48,7 +48,7 @@
         <span class="h-1.5 w-1.5 rounded-full bg-orange-300"></span>Gabung klub
       </span>
       <h1 class="font-display text-3xl font-bold tracking-tight leading-tight mt-5">Mulai perjalananmu<br /><span class="text-orange-300">di papan peringkat.</span></h1>
-      <p class="mt-3 text-[12px] leading-relaxed text-blue-100">Lengkapi data diri dan profil olahraga. Setelah terdaftar, pengurus akan mencatat pertandingan resmi pertamamu.</p>
+      <p class="mt-3 text-[12px] leading-relaxed text-blue-100">Lengkapi data akunmu. Setelah terdaftar, pengurus akan mencatat pertandingan resmi pertamamu.</p>
       <div class="mt-7 space-y-3">
         <div class="flex items-start gap-3 rounded-2xl bg-white/10 border border-white/15 p-3.5"><span class="h-9 w-9 rounded-xl bg-white/15 grid place-items-center shrink-0"><span class="material-symbols-outlined text-[19px]">person_add</span></span><div><p class="text-[12px] font-bold">Akun anggota resmi</p><p class="text-[11px] text-blue-100 mt-0.5">Nomor anggota dibuat otomatis.</p></div></div>
         <div class="flex items-start gap-3 rounded-2xl bg-white/10 border border-white/15 p-3.5"><span class="h-9 w-9 rounded-xl bg-white/15 grid place-items-center shrink-0"><span class="material-symbols-outlined text-[19px]">military_tech</span></span><div><p class="text-[12px] font-bold">Ranking dari performa</p><p class="text-[11px] text-blue-100 mt-0.5">Poin dihitung dari hasil pertandingan.</p></div></div>
@@ -82,7 +82,7 @@
           </div>
           <div>
             <p class="text-[12px] font-bold">Foto profil <span class="text-slate-400 font-medium">(opsional)</span></p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Maksimal 5 MB. JPG, PNG, WEBP, atau GIF.</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Maksimal 3 MB. JPG, PNG, WEBP, atau GIF.</p>
           </div>
         </div>
 
@@ -102,21 +102,6 @@
               <input id="phone" type="tel" maxlength="20" placeholder="08xxxxxxxxxx" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
             </div>
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Kata sandi</label>
-              <input id="password" type="password" minlength="8" maxlength="72" required placeholder="Minimal 8 karakter" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
-              <div class="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden"><div id="strengthBar" class="h-full w-0 bg-rose-400 transition-all"></div></div>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Konfirmasi sandi</label>
-              <input id="confirmPassword" type="password" minlength="8" maxlength="72" required placeholder="Ulangi kata sandi" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
-            </div>
-          </div>
-        </div>
-
-        <div class="pt-1">
-          <h2 class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-blue-600">Profil olahraga</h2>
-          <div class="mt-3 grid sm:grid-cols-2 gap-3.5">
-            <div>
               <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Gender</label>
               <select id="gender" required class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
                 <option value="">Pilih gender</option>
@@ -129,34 +114,13 @@
               <input id="birthDate" type="date" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
             </div>
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tangan dominan</label>
-              <select id="dominantHand" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
-                <option value="">Pilih</option>
-                <option value="kanan">Kanan</option>
-                <option value="kiri">Kiri</option>
-              </select>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Kata sandi</label>
+              <input id="password" type="password" minlength="8" maxlength="72" required placeholder="Minimal 8 karakter" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+              <div class="mt-1.5 h-1 rounded-full bg-slate-100 overflow-hidden"><div id="strengthBar" class="h-full w-0 bg-rose-400 transition-all"></div></div>
             </div>
             <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Peran ganda</label>
-              <select id="doublesRole" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
-                <option value="">Pilih</option>
-                <option value="playmaker">Playmaker</option>
-                <option value="smasher">Smasher</option>
-                <option value="allrounder">Allrounder</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Latar</label>
-              <select id="background" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
-                <option value="">Pilih</option>
-                <option value="pelatnas">Pelatnas</option>
-                <option value="semipro">Semipro</option>
-                <option value="komunitas">Komunitas</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Raket utama</label>
-              <input id="racket" type="text" maxlength="120" placeholder="mis. Yonex Astrox 88D Pro" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Konfirmasi sandi</label>
+              <input id="confirmPassword" type="password" minlength="8" maxlength="72" required placeholder="Ulangi kata sandi" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
             </div>
           </div>
         </div>
@@ -208,16 +172,46 @@
         }
       }).catch(function () {});
 
+      var MAX_PHOTO_BYTES = 3 * 1024 * 1024;
+
+      function defaultAvatar(gender) {
+        if (gender === 'LAKI_LAKI') return 'assets/avatar-cowok.svg';
+        if (gender === 'PEREMPUAN') return 'assets/avatar-cewek.svg';
+        return '';
+      }
+
+      function showAvatar(src) {
+        var preview = document.getElementById('avatarPreview');
+        var fallback = document.getElementById('avatarFallback');
+        if (src) {
+          preview.src = src;
+          preview.classList.remove('hidden');
+          fallback.classList.add('hidden');
+        } else {
+          preview.removeAttribute('src');
+          preview.classList.add('hidden');
+          fallback.classList.remove('hidden');
+        }
+      }
+
       document.getElementById('avatarInput').addEventListener('change', function (e) {
         var file = e.target.files[0];
-        if (!file) return;
+        if (!file) return showAvatar(defaultAvatar(document.getElementById('gender').value));
+        if (file.size > MAX_PHOTO_BYTES) {
+          e.target.value = '';
+          showAvatar(defaultAvatar(document.getElementById('gender').value));
+          PBUI.toast('Ukuran foto maksimal 3 MB', 'error');
+          return;
+        }
         var reader = new FileReader();
-        reader.onload = function (ev) {
-          document.getElementById('avatarPreview').src = ev.target.result;
-          document.getElementById('avatarPreview').classList.remove('hidden');
-          document.getElementById('avatarFallback').classList.add('hidden');
-        };
+        reader.onload = function (ev) { showAvatar(ev.target.result); };
         reader.readAsDataURL(file);
+      });
+
+      document.getElementById('gender').addEventListener('change', function (e) {
+        if (!document.getElementById('avatarInput').files[0]) {
+          showAvatar(defaultAvatar(e.target.value));
+        }
       });
 
       document.getElementById('password').addEventListener('input', function (e) {
@@ -262,12 +256,14 @@
           password: pwd,
           phone: normalizePhone(document.getElementById('phone').value) || undefined,
           birthDate: document.getElementById('birthDate').value || undefined,
-          gender: gender,
-          doublesRole: document.getElementById('doublesRole').value || undefined,
-          dominantHand: document.getElementById('dominantHand').value || undefined,
-          background: document.getElementById('background').value || undefined,
-          racket: document.getElementById('racket').value.trim() || undefined
+          gender: gender
         };
+
+        var avatarFile = document.getElementById('avatarInput').files[0];
+        if (avatarFile && avatarFile.size > MAX_PHOTO_BYTES) {
+          PBUI.toast('Ukuran foto maksimal 3 MB', 'error');
+          return;
+        }
 
         var btn = document.getElementById('registerBtn');
         btn.disabled = true;

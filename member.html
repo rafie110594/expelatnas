@@ -67,7 +67,7 @@
   <div id="editModal" class="fixed inset-0 z-[70] hidden bg-slate-900/40 backdrop-blur-sm items-center justify-center p-4">
     <div class="w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-2xl border border-blue-100 bg-white shadow-2xl">
       <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 sticky top-0 bg-white rounded-t-2xl">
-        <div><h2 class="font-display text-lg font-bold">Edit Profil</h2><p class="text-[11px] text-slate-400">Perbarui data diri dan profil olahraga.</p></div>
+        <div><h2 class="font-display text-lg font-bold">Edit Profil</h2><p class="text-[11px] text-slate-400">Perbarui data akun dan foto profil.</p></div>
         <button type="button" id="closeEdit" class="h-8 w-8 rounded-lg hover:bg-slate-100 grid place-items-center"><span class="material-symbols-outlined text-[20px]">close</span></button>
       </div>
       <form id="editForm" class="p-5 space-y-3.5">
@@ -93,44 +93,10 @@
           <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nomor telepon</label>
           <input name="phone" type="tel" maxlength="20" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tangan dominan</label>
-            <select name="dominantHand" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
-              <option value="">Pilih</option>
-              <option value="kanan">Kanan</option>
-              <option value="kiri">Kiri</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Peran ganda</label>
-            <select name="doublesRole" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
-              <option value="">Pilih</option>
-              <option value="playmaker">Playmaker</option>
-              <option value="smasher">Smasher</option>
-              <option value="allrounder">Allrounder</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Latar</label>
-            <select name="background" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white">
-              <option value="">Pilih</option>
-              <option value="pelatnas">Pelatnas</option>
-              <option value="semipro">Semipro</option>
-              <option value="komunitas">Komunitas</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Raket</label>
-            <input name="racket" type="text" maxlength="120" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-blue-400 focus:bg-white" />
-          </div>
-        </div>
         <div class="rounded-xl border border-blue-100 bg-blue-50/60 p-3">
           <label class="block text-[11px] font-bold uppercase tracking-wider text-blue-700 mb-1.5">Foto profil</label>
           <input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="block w-full text-[11px] text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white file:font-bold file:text-[11px]" />
-          <p class="mt-1 text-[10px] text-blue-600">Maksimal 5 MB. JPG, PNG, WEBP, atau GIF.</p>
+          <p class="mt-1 text-[10px] text-blue-600">Maksimal 3 MB. JPG, PNG, WEBP, atau GIF.</p>
         </div>
         <div class="flex items-center justify-end gap-2 pt-2">
           <button type="button" id="cancelEdit" class="px-4 py-2.5 rounded-xl text-[11px] font-bold text-slate-500 hover:bg-slate-100">Batal</button>
@@ -161,6 +127,11 @@
       }
       function displayName(p) { return (p && p.alias) ? p.alias : (p && p.fullName) || '-'; }
       function genderLabel(g) { return g === 'LAKI_LAKI' ? 'Laki-laki' : g === 'PEREMPUAN' ? 'Perempuan' : '-'; }
+      function defaultAvatar(g) {
+        if (g === 'LAKI_LAKI') return 'assets/avatar-cowok.svg';
+        if (g === 'PEREMPUAN') return 'assets/avatar-cewek.svg';
+        return '';
+      }
       function dateInput(iso) {
         if (!iso) return '';
         var d = new Date(iso);
@@ -174,8 +145,9 @@
         var rank = p.rank;
         var rankName = rank ? rank.name : '-';
         var gradient = RANK_STYLE[rankName] || 'from-slate-700 to-slate-500';
-        var photo = p.photoUrl
-          ? '<img src="' + esc(p.photoUrl) + '" alt="" class="h-24 w-24 rounded-2xl object-cover border-4 border-white shadow-lg" />'
+        var photoSrc = p.photoUrl || defaultAvatar(user.gender);
+        var photo = photoSrc
+          ? '<img src="' + esc(photoSrc) + '" alt="" class="h-24 w-24 rounded-2xl object-cover border-4 border-white shadow-lg" />'
           : '<span class="h-24 w-24 rounded-2xl grid place-items-center bg-white/15 border-2 border-white/30 text-white font-display text-3xl font-bold">' + esc(initials(user.fullName)) + '</span>';
 
         var s = stats || {};
@@ -204,7 +176,7 @@
           (user.alias && user.fullName ? '<p class="text-[12px] text-blue-100 mt-0.5">' + esc(user.fullName) + '</p>' : '') +
           '<div class="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-semibold">' +
           '<span class="px-2.5 py-1 rounded-lg bg-white/15 border border-white/20">' + esc(p.memberNumber || '-') + '</span>' +
-          '<span class="px-2.5 py-1 rounded-lg bg-white/15 border border-white/20">' + esc(genderLabel(p.gender)) + '</span>' +
+          '<span class="px-2.5 py-1 rounded-lg bg-white/15 border border-white/20">' + esc(genderLabel(user.gender)) + '</span>' +
           '<span class="px-2.5 py-1 rounded-lg bg-white/15 border border-white/20">Rank ' + esc(rankName) + '</span>' +
           '</div></div>' +
           '<div class="sm:text-right shrink-0"><p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-100">Total poin</p>' +
@@ -229,13 +201,12 @@
           '</section>' +
 
           '<section class="rounded-2xl border border-blue-100 bg-white p-4 md:p-5">' +
-          '<p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">Informasi</p><h2 class="font-display text-lg font-bold mt-0.5">Profil olahraga</h2>' +
+          '<p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">Informasi</p><h2 class="font-display text-lg font-bold mt-0.5">Data akun</h2>' +
           '<dl class="mt-4 space-y-2.5 text-[12px]">' +
+          info('Email', user.email || '-') +
           info('Telepon', p.phone || '-') +
-          info('Tanggal lahir', p.birthDate ? PBUI.fmtDate(p.birthDate) : '-') +
-          info('Tangan dominan', p.dominantHand ? (p.dominantHand === 'kanan' ? 'Kanan' : 'Kiri') : '-') +
-          info('Peran ganda', p.doublesRole ? p.doublesRole[0].toUpperCase() + p.doublesRole.slice(1) : '-') +
-          info('Raket', p.racket || '-') +
+          info('Tanggal lahir', user.birthDate ? PBUI.fmtDate(user.birthDate) : '-') +
+          info('Bergabung', p.dateJoined ? PBUI.fmtDate(p.dateJoined) : '-') +
           '</dl></section></div>' +
 
           '<section class="mt-4 rounded-2xl border border-blue-100 bg-white p-4 flex flex-col sm:flex-row items-center justify-between gap-3">' +
@@ -255,13 +226,9 @@
         var p = (current && current.profile) || {};
         var f = document.getElementById('editForm');
         f.elements.fullName.value = current ? current.fullName || '' : '';
-        f.elements.gender.value = p.gender || '';
-        f.elements.birthDate.value = dateInput(p.birthDate);
+        f.elements.gender.value = current ? current.gender || '' : '';
+        f.elements.birthDate.value = dateInput(current && current.birthDate);
         f.elements.phone.value = p.phone || '';
-        f.elements.dominantHand.value = p.dominantHand || '';
-        f.elements.doublesRole.value = p.doublesRole || '';
-        f.elements.background.value = p.background || '';
-        f.elements.racket.value = p.racket || '';
         document.getElementById('photoInput').value = '';
       }
 
@@ -299,6 +266,10 @@
       function uploadPhotoIfAny() {
         var file = document.getElementById('photoInput').files[0];
         if (!file) return Promise.resolve();
+        if (file.size > 3 * 1024 * 1024) {
+          PBUI.toast('Ukuran foto maksimal 3 MB', 'error');
+          return Promise.resolve();
+        }
         var fd = new FormData();
         fd.append('photo', file);
         return api.upload('/members/me/photo', fd).then(function () {
@@ -321,11 +292,7 @@
           fullName: f.elements.fullName.value.trim(),
           gender: f.elements.gender.value || null,
           birthDate: f.elements.birthDate.value || null,
-          phone: f.elements.phone.value.trim() || null,
-          dominantHand: f.elements.dominantHand.value || null,
-          doublesRole: f.elements.doublesRole.value || null,
-          background: f.elements.background.value || null,
-          racket: f.elements.racket.value.trim() || null
+          phone: f.elements.phone.value.trim() || null
         };
         if (payload.fullName.length < 2) {
           PBUI.toast('Nama minimal 2 karakter', 'error');

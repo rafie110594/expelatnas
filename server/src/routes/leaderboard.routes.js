@@ -7,6 +7,7 @@ const router = require('express').Router();
 
 const controller = require('../controllers/leaderboard.controller');
 const validate = require('../middlewares/validate');
+const { publicCache } = require('../middlewares/publicCache');
 const { requireAuth } = require('../middlewares/auth.middleware');
 const { leaderboardQuerySchema } = require('../validators/leaderboard.validator');
 
@@ -14,6 +15,6 @@ const { leaderboardQuerySchema } = require('../validators/leaderboard.validator'
 router.get('/me', requireAuth, controller.myPosition);
 
 // GET /api/leaderboard — klasemen publik (search, filter rank, paginasi)
-router.get('/', validate(leaderboardQuerySchema, 'query'), controller.list);
+router.get('/', publicCache(30, 120), validate(leaderboardQuerySchema, 'query'), controller.list);
 
 module.exports = router;

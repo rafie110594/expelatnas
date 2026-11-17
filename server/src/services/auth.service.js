@@ -94,6 +94,8 @@ async function register(data, req) {
         passwordHash,
         role: 'MEMBER',
         status: 'ACTIVE',
+        gender: data.gender || null,
+        birthDate: data.birthDate ? new Date(data.birthDate) : null,
       },
     });
     await tx.memberProfile.create({
@@ -101,13 +103,6 @@ async function register(data, req) {
         userId: created.id,
         memberNumber: await generateMemberNumber(tx),
         phone: data.phone || null,
-        birthDate: data.birthDate ? new Date(data.birthDate) : null,
-        gender: data.gender || null,
-        genderCategory: data.genderCategory || null,
-        doublesRole: data.doublesRole || null,
-        dominantHand: data.dominantHand || null,
-        background: data.background || null,
-        racket: data.racket || null,
         initialPoints: 0,
         currentPoints: 0,
       },

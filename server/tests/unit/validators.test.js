@@ -23,9 +23,9 @@ const {
 
 const VALID_MATCH = {
   title: 'Laga Placement Kamis',
-  matchType: 'SINGLE',
-  teamA: ['user-a'],
-  teamB: ['user-b'],
+  matchType: 'DOUBLES',
+  teamA: ['user-a', 'user-c'],
+  teamB: ['user-b', 'user-d'],
   teamAScore: 21,
   teamBScore: 15,
 };
@@ -45,15 +45,15 @@ test('skor seri ditolak — harus ada pemenang', () => {
 test('pemain yang sama di kedua tim ditolak', () => {
   const r = createMatchSchema.safeParse({
     ...VALID_MATCH,
-    matchType: 'DOUBLES',
     teamA: ['user-a', 'user-x'],
     teamB: ['user-a', 'user-y'],
   });
   assert.equal(r.success, false);
 });
 
-test('tim kosong atau lebih dari 2 pemain ditolak', () => {
+test('setiap tim wajib tepat 2 pemain', () => {
   assert.equal(createMatchSchema.safeParse({ ...VALID_MATCH, teamA: [] }).success, false);
+  assert.equal(createMatchSchema.safeParse({ ...VALID_MATCH, teamA: ['a'] }).success, false);
   assert.equal(
     createMatchSchema.safeParse({ ...VALID_MATCH, teamA: ['a', 'b', 'c'] }).success,
     false
@@ -65,7 +65,9 @@ test('skor di luar 0-999 atau negatif ditolak', () => {
   assert.equal(createMatchSchema.safeParse({ ...VALID_MATCH, teamAScore: -1 }).success, false);
 });
 
-test('matchType di luar enum ditolak', () => {
+test('matchType selain DOUBLES ditolak', () => {
+  assert.equal(createMatchSchema.safeParse({ ...VALID_MATCH, matchType: 'SINGLE' }).success, false);
+  assert.equal(createMatchSchema.safeParse({ ...VALID_MATCH, matchType: 'CLUB' }).success, false);
   assert.equal(createMatchSchema.safeParse({ ...VALID_MATCH, matchType: 'TRIPLE' }).success, false);
 });
 

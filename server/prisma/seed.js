@@ -92,16 +92,12 @@ async function main() {
       passwordHash: memberHash,
       role: 'MEMBER',
       status: 'ACTIVE',
+      gender: 'LAKI_LAKI',
+      birthDate: new Date('1996-10-20'),
       profile: {
         create: {
           memberNumber: 'PB-0001',
           phone: '812-9988-7766',
-          gender: 'LAKI_LAKI',
-          genderCategory: 'ganda_putra',
-          doublesRole: 'allrounder',
-          dominantHand: 'kanan',
-          background: 'semipro',
-          racket: 'Yonex Astrox 88D Pro',
           initialPoints: 0,
           currentPoints: 0,
         },

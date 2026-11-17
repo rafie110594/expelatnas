@@ -63,6 +63,8 @@ model User {
   passwordHash String
   role         Role       @default(MEMBER)
   status       UserStatus @default(ACTIVE)
+  gender       String?    @db.VarChar(20) // LAKI_LAKI | PEREMPUAN
+  birthDate    DateTime?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
@@ -87,15 +89,6 @@ model MemberProfile {
   photoUrl     String?
   phone        String?   @db.VarChar(20)
   dateJoined   DateTime  @default(now())
-  birthDate    DateTime?
-
-  // Profil olahraga (dari formulir registrasi)
-  gender         String? @db.VarChar(20) // LAKI_LAKI | PEREMPUAN
-  genderCategory String? @db.VarChar(20) // ganda_putra | ganda_putri
-  doublesRole    String? @db.VarChar(30) // playmaker | smasher | allrounder
-  dominantHand   String? @db.VarChar(10) // kanan | kiri
-  background     String? @db.VarChar(30) // pelatnas | semipro | komunitas
-  racket         String? @db.VarChar(120)
 
   // Poin & rank
   initialPoints Int          @default(0) // poin awal — terpisah dari hasil pertandingan
@@ -127,7 +120,7 @@ model RankSetting {
 model Match {
   id        String      @id @default(cuid())
   title     String      @db.VarChar(160)
-  matchType String      @default("DOUBLES") @db.VarChar(20) // SINGLE | DOUBLES | CLUB
+  matchType String      @default("DOUBLES") @db.VarChar(20) // DOUBLES
   status    MatchStatus @default(DRAFT)
 
   scheduledAt DateTime?
@@ -153,6 +146,7 @@ model Match {
 
   @@index([status])
   @@index([scheduledAt])
+  @@index([status, createdAt])
 }
 
 model MatchParticipant {

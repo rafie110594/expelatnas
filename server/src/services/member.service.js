@@ -32,13 +32,8 @@ function toMemberItem(profile, ranks) {
     photoUrl: profile.photoUrl,
     phone: profile.phone,
     dateJoined: profile.dateJoined,
-    birthDate: profile.birthDate,
-    gender: profile.gender,
-    genderCategory: profile.genderCategory,
-    doublesRole: profile.doublesRole,
-    dominantHand: profile.dominantHand,
-    background: profile.background,
-    racket: profile.racket,
+    birthDate: u.birthDate,
+    gender: u.gender,
     initialPoints: profile.initialPoints,
     currentPoints: profile.currentPoints,
     rank: resolveRank(profile.currentPoints, ranks),
@@ -225,14 +220,7 @@ async function detail(userId) {
 
 function profileDataFrom(input) {
   return {
-    gender: input.gender ?? null,
     phone: input.phone ?? null,
-    birthDate: input.birthDate ? new Date(input.birthDate) : null,
-    genderCategory: input.genderCategory ?? null,
-    doublesRole: input.doublesRole ?? null,
-    dominantHand: input.dominantHand ?? null,
-    background: input.background ?? null,
-    racket: input.racket ?? null,
   };
 }
 
@@ -253,6 +241,8 @@ async function create(input, actor) {
           passwordHash,
           role: 'MEMBER',
           status: 'ACTIVE',
+          gender: input.gender ?? null,
+          birthDate: input.birthDate ? new Date(input.birthDate) : null,
         },
       });
       const memberNumber = await generateMemberNumber(tx);
@@ -321,36 +311,21 @@ async function update(userId, input, actor) {
   if (input.fullName !== undefined) userPatch.fullName = input.fullName;
   if (input.alias !== undefined) userPatch.alias = input.alias || null;
   if (input.status !== undefined) userPatch.status = input.status;
+  if (input.gender !== undefined) userPatch.gender = input.gender;
+  if (input.birthDate !== undefined) {
+    userPatch.birthDate = input.birthDate ? new Date(input.birthDate) : null;
+  }
 
   const profilePatch = {};
-  const nullableKeys = [
-    'gender',
-    'phone',
-    'birthDate',
-    'genderCategory',
-    'doublesRole',
-    'dominantHand',
-    'background',
-    'racket',
-  ];
-  for (const k of nullableKeys) {
-    if (input[k] !== undefined) {
-      profilePatch[k] = k === 'birthDate' && input[k] ? new Date(input[k]) : input[k];
-    }
-  }
+  if (input.phone !== undefined) profilePatch.phone = input.phone;
 
   const before = {
     fullName: user.fullName,
     alias: user.alias,
     status: user.status,
-    gender: user.profile.gender,
+    gender: user.gender,
     phone: user.profile.phone,
-    birthDate: user.profile.birthDate,
-    genderCategory: user.profile.genderCategory,
-    doublesRole: user.profile.doublesRole,
-    dominantHand: user.profile.dominantHand,
-    background: user.profile.background,
-    racket: user.profile.racket,
+    birthDate: user.birthDate,
   };
 
   await prisma.$transaction(
@@ -459,7 +434,7 @@ async function getMyStats(userId) {
     alias: user.alias || null,
     memberNumber: user.profile.memberNumber,
     photoUrl: user.profile.photoUrl,
-    gender: user.profile.gender,
+    gender: user.gender,
     currentPoints: user.profile.currentPoints,
     rank: resolveRank(user.profile.currentPoints, ranks),
     pointsThisMonth: monthAgg._sum.delta ?? 0,
@@ -482,23 +457,13 @@ async function updateMyProfile(userId, input) {
 
   const userPatch = {};
   if (input.fullName !== undefined) userPatch.fullName = input.fullName;
+  if (input.gender !== undefined) userPatch.gender = input.gender;
+  if (input.birthDate !== undefined) {
+    userPatch.birthDate = input.birthDate ? new Date(input.birthDate) : null;
+  }
 
   const profilePatch = {};
-  const nullableKeys = [
-    'gender',
-    'phone',
-    'birthDate',
-    'genderCategory',
-    'doublesRole',
-    'dominantHand',
-    'background',
-    'racket',
-  ];
-  for (const k of nullableKeys) {
-    if (input[k] !== undefined) {
-      profilePatch[k] = k === 'birthDate' && input[k] ? new Date(input[k]) : input[k];
-    }
-  }
+  if (input.phone !== undefined) profilePatch.phone = input.phone;
 
   await prisma.$transaction(
     async (tx) => {

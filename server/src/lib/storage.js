@@ -84,9 +84,7 @@ async function removeCloudinary(publicId) {
 // ---------- Driver Vercel Blob ----------
 
 async function saveVercelBlob(buffer, ext, mimetype) {
-  const hasCredentials =
-    process.env.BLOB_READ_WRITE_TOKEN ||
-    (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN);
+  const hasCredentials = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID;
   if (!hasCredentials) {
     throw ApiError.internal(
       'STORAGE_DRIVER=vercel-blob tetapi kredensial Vercel Blob belum tersedia'

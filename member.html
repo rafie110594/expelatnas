@@ -19,6 +19,13 @@
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .member-tab {
+      flex: 1 0 auto; min-width: 76px; padding: 8px 14px; border-radius: 10px;
+      text-align: center; font-size: 12px; font-weight: 700; color: #64748b;
+      transition: background-color .15s, color .15s, box-shadow .15s;
+    }
+    .member-tab:hover { background: #f8fafc; color: #0f172a; }
+    .member-tab.is-active { background: #1d4ed8; color: #fff; box-shadow: 0 4px 12px rgba(29,78,216,.2); }
   </style>
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
@@ -52,6 +59,14 @@
   </header>
 
   <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 md:py-8">
+    <nav id="memberTabs" class="hidden sticky top-16 z-30 -mx-4 mb-4 px-4 py-2 bg-[#f5f8ff]/95 backdrop-blur border-b border-blue-100/60" aria-label="Navigasi dashboard anggota">
+      <div class="max-w-3xl mx-auto flex gap-1 p-1 rounded-2xl border border-blue-100 bg-white shadow-sm overflow-x-auto no-scrollbar">
+        <a href="#overview" data-member-nav="overview" class="member-tab">Ringkasan</a>
+        <a href="#stats" data-member-nav="stats" class="member-tab">Statistik</a>
+        <a href="#points" data-member-nav="points" class="member-tab">Poin</a>
+        <a href="#profile" data-member-nav="profile" class="member-tab">Profil</a>
+      </div>
+    </nav>
     <div id="memberContent">
       <div class="h-64 rounded-3xl bg-white border border-blue-100 animate-pulse"></div>
     </div>
@@ -139,6 +154,71 @@
         return d.toISOString().slice(0, 10);
       }
 
+      var MEMBER_PANELS = ['overview', 'stats', 'points', 'profile'];
+      var POINT_LABELS = {
+        INITIAL: 'Poin awal',
+        MATCH_WIN: 'Menang laga',
+        MATCH_LOSS: 'Kalah laga',
+        ADJUSTMENT: 'Penyesuaian admin',
+        REVERSAL: 'Koreksi hasil'
+      };
+
+      function activeMemberPanel() {
+        var name = (window.location.hash || '').replace(/^#/, '');
+        return MEMBER_PANELS.indexOf(name) >= 0 ? name : 'overview';
+      }
+
+      function showMemberPanel(name) {
+        if (MEMBER_PANELS.indexOf(name) < 0) name = 'overview';
+        document.querySelectorAll('[data-member-panel]').forEach(function (panel) {
+          panel.classList.toggle('hidden', panel.getAttribute('data-member-panel') !== name);
+        });
+        document.querySelectorAll('[data-member-nav]').forEach(function (link) {
+          var on = link.getAttribute('data-member-nav') === name;
+          link.classList.toggle('is-active', on);
+          if (on) link.setAttribute('aria-current', 'page');
+          else link.removeAttribute('aria-current');
+        });
+        if (window.location.hash !== '#' + name) {
+          history.replaceState(null, '', '#' + name);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      window.addEventListener('hashchange', function () {
+        if (current) showMemberPanel(activeMemberPanel());
+      });
+
+      function formBadges(form) {
+        var html = (form || []).map(function (f) {
+          return '<span class="h-7 min-w-7 px-1.5 rounded-lg grid place-items-center text-[10px] font-extrabold ' +
+            (f === 'W' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-600') + '">' + esc(f) + '</span>';
+        }).join('');
+        return html || '<span class="text-[11px] text-slate-400">Belum ada</span>';
+      }
+
+      function detailCard(label, value) {
+        return '<div class="rounded-xl border border-slate-100 bg-slate-50/80 p-3">' +
+          '<p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">' + esc(label) + '</p>' +
+          '<p class="font-display text-lg font-bold text-slate-900 mt-1">' + esc(value) + '</p></div>';
+      }
+
+      function pointRow(tx) {
+        var delta = Number(tx.delta) || 0;
+        var sign = delta > 0 ? '+' : '';
+        var tone = delta > 0 ? 'text-emerald-700 bg-emerald-50 border-emerald-100'
+          : delta < 0 ? 'text-rose-600 bg-rose-50 border-rose-100'
+            : 'text-slate-600 bg-slate-50 border-slate-100';
+        var label = POINT_LABELS[tx.type] || tx.type || 'Transaksi';
+        return '<div class="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-white p-3">' +
+          '<div class="min-w-0"><p class="text-[12px] font-bold text-slate-800 truncate">' + esc(label) + '</p>' +
+          '<p class="text-[10px] text-slate-400 mt-0.5">' + esc(tx.createdAt ? PBUI.fmtDate(tx.createdAt) : '-') + '</p></div>' +
+          '<div class="flex items-center gap-2 shrink-0">' +
+          '<span class="px-2 py-1 rounded-lg border text-[11px] font-extrabold ' + tone + '">' + sign + PBUI.fmtNum(delta) + ' Pts</span>' +
+          '<span class="text-[10px] font-semibold text-slate-400">' + PBUI.fmtNum(tx.pointsAfter) + '</span>' +
+          '</div></div>';
+      }
+
       function render(user) {
         current = user;
         var p = user.profile || {};
@@ -152,9 +232,8 @@
 
         var s = stats || {};
         var streak = s.currentStreak ? (s.currentStreak.type === 'win' ? s.currentStreak.count + ' menang beruntun' : s.currentStreak.count + ' kalah beruntun') : 'Belum ada';
-        var form = (s.recentForm || []).map(function (f) {
-          return '<span class="h-7 w-7 rounded-lg grid place-items-center text-[10px] font-extrabold ' + (f === 'W' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-600') + '">' + f + '</span>';
-        }).join('');
+        var form = formBadges(s.recentForm);
+        var pointsThisMonth = Number(s.pointsThisMonth) || 0;
 
         var trend = (s.trend || []).map(function (t) { return Number(t.pointsAfter) || 0; });
         var max = trend.length ? Math.max.apply(null, trend) : 0;
@@ -165,8 +244,10 @@
           return '<div class="flex-1 min-w-[6px] rounded-t-md bg-white/70" style="height:' + h + 'px" title="' + v + ' pts"></div>';
         }).join('');
 
+        var txRows = (s.trend || []).slice().reverse().map(pointRow).join('');
         var container = document.getElementById('memberContent');
         container.innerHTML =
+          '<div data-member-panel="overview" class="space-y-4">' +
           '<section class="relative overflow-hidden rounded-3xl bg-gradient-to-br ' + gradient + ' p-5 md:p-7 text-white shadow-2xl shadow-blue-900/20">' +
           '<div class="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/10 blur-2xl"></div>' +
           '<div class="relative flex flex-col sm:flex-row sm:items-center gap-5">' + photo +
@@ -181,38 +262,86 @@
           '</div></div>' +
           '<div class="sm:text-right shrink-0"><p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-100">Total poin</p>' +
           '<p class="font-display text-4xl md:text-5xl font-bold leading-none mt-1">' + PBUI.fmtNum(p.currentPoints) + '</p>' +
-          '<button type="button" id="btnEdit" class="mt-3 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white text-blue-700 text-[11px] font-bold hover:bg-blue-50 transition-colors"><span class="material-symbols-outlined text-[16px]">edit</span>Edit profil</button></div>' +
+          '<a href="#stats" class="mt-3 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white text-blue-700 text-[11px] font-bold hover:bg-blue-50 transition-colors"><span class="material-symbols-outlined text-[16px]">monitoring</span>Lihat statistik</a></div>' +
           '</div></section>' +
 
-          '<section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">' +
+          '<section class="grid grid-cols-2 lg:grid-cols-4 gap-3">' +
           card('Pertandingan', PBUI.fmtNum(s.totalMatches), 'sports_tennis', 'text-blue-700 bg-blue-50') +
           card('Menang', PBUI.fmtNum(s.wins), 'emoji_events', 'text-emerald-700 bg-emerald-50') +
           card('Kalah', PBUI.fmtNum(s.losses), 'sports', 'text-rose-600 bg-rose-50') +
           card('Win rate', (s.winRate != null ? s.winRate : 0) + '%', 'percent', 'text-indigo-700 bg-indigo-50') +
           '</section>' +
 
-          '<div class="grid lg:grid-cols-[1.2fr_.8fr] gap-4 mt-4">' +
+          '<section class="grid sm:grid-cols-2 gap-3">' +
+          '<div class="rounded-2xl border border-blue-100 bg-white p-4"><p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Rank saat ini</p><p class="font-display text-2xl font-bold mt-1">Rank ' + esc(rankName) + '</p><p class="text-[11px] text-slate-500 mt-1">' + PBUI.fmtNum(p.currentPoints) + ' poin total</p></div>' +
+          '<div class="rounded-2xl border border-blue-100 bg-white p-4"><p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Bulan ini</p><p class="font-display text-2xl font-bold mt-1 ' + (pointsThisMonth >= 0 ? 'text-emerald-600' : 'text-rose-600') + '">' + (pointsThisMonth >= 0 ? '+' : '') + PBUI.fmtNum(pointsThisMonth) + ' poin</p><p class="text-[11px] text-slate-500 mt-1">Perubahan poin bulan berjalan</p></div>' +
+          '</section>' +
+
+          '<section class="rounded-2xl border border-blue-100 bg-white p-4 flex flex-col sm:flex-row items-center justify-between gap-3">' +
+          '<div><p class="text-[12px] font-bold">Mau lihat posisi klub secara lengkap?</p><p class="text-[11px] text-slate-500 mt-0.5">Bandingkan poin dan statistikmu dengan anggota lain.</p></div>' +
+          '<a href="leaderboard.html" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl pb-btn text-[11px] font-bold"><span class="material-symbols-outlined text-[17px]">leaderboard</span>Buka ranking</a>' +
+          '</section>' +
+          '</div>' +
+
+          '<div data-member-panel="stats" class="hidden space-y-4">' +
           '<section class="rounded-2xl border border-blue-100 bg-white p-4 md:p-5">' +
-          '<div class="flex items-center justify-between"><div><p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">Performa</p><h2 class="font-display text-lg font-bold mt-0.5">Tren poin terakhir</h2></div>' +
-          '<span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-bold">' + (s.pointsThisMonth >= 0 ? '+' : '') + PBUI.fmtNum(s.pointsThisMonth) + ' bulan ini</span></div>' +
-          '<div class="mt-5 flex items-end gap-1.5 h-24 rounded-xl bg-gradient-to-b from-blue-700 via-blue-500 to-orange-500 p-3">' + (bars || '<p class="m-auto text-[11px] text-blue-100">Belum ada riwayat poin</p>') + '</div>' +
-          '<div class="mt-4 flex items-center justify-between gap-3"><div><p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Streak</p><p class="text-[12px] font-bold mt-0.5">' + esc(streak) + '</p></div>' +
-          '<div class="text-right"><p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">5 laga terakhir</p><div class="mt-1 flex gap-1 justify-end">' + (form || '<span class="text-[11px] text-slate-400">-</span>') + '</div></div></div>' +
+          '<div class="flex items-center justify-between gap-3"><div><p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">Performa</p><h2 class="font-display text-lg font-bold mt-0.5">Tren poin terakhir</h2></div>' +
+          '<span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-bold">' + (pointsThisMonth >= 0 ? '+' : '') + PBUI.fmtNum(pointsThisMonth) + ' bulan ini</span></div>' +
+          '<div class="mt-5 flex items-end gap-1.5 h-28 rounded-xl bg-gradient-to-b from-blue-700 via-blue-500 to-orange-500 p-3">' + (bars || '<p class="m-auto text-[11px] text-blue-100">Belum ada riwayat poin</p>') + '</div>' +
+          '<div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Streak</p><p class="text-[12px] font-bold mt-0.5">' + esc(streak) + '</p></div>' +
+          '<div class="sm:text-right"><p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">10 laga terakhir</p><div class="mt-1 flex gap-1 sm:justify-end">' + form + '</div></div></div>' +
           '</section>' +
 
           '<section class="rounded-2xl border border-blue-100 bg-white p-4 md:p-5">' +
+          '<p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">Rincian</p><h2 class="font-display text-lg font-bold mt-0.5">Statistik pertandingan</h2>' +
+          '<div class="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-2.5">' +
+          detailCard('Total laga', PBUI.fmtNum(s.totalMatches)) +
+          detailCard('Menang', PBUI.fmtNum(s.wins)) +
+          detailCard('Kalah', PBUI.fmtNum(s.losses)) +
+          detailCard('Win rate', (s.winRate != null ? s.winRate : 0) + '%') +
+          detailCard('Poin menang', '+' + PBUI.fmtNum(s.pointsFromWins || 0)) +
+          detailCard('Poin kalah', PBUI.fmtNum(s.pointsFromLosses || 0)) +
+          detailCard('Poin bulan ini', (pointsThisMonth >= 0 ? '+' : '') + PBUI.fmtNum(pointsThisMonth)) +
+          detailCard('Rank', rankName) +
+          '</div></section>' +
+          '</div>' +
+
+          '<div data-member-panel="points" class="hidden space-y-4">' +
+          '<section class="relative overflow-hidden rounded-3xl bg-gradient-to-br ' + gradient + ' p-5 md:p-6 text-white shadow-xl shadow-blue-900/15">' +
+          '<div class="absolute -right-8 -bottom-8 h-40 w-40 rounded-full bg-white/10 blur-2xl"></div>' +
+          '<div class="relative flex flex-col sm:flex-row sm:items-end justify-between gap-4">' +
+          '<div><p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-100">Saldo poin</p><p class="font-display text-4xl md:text-5xl font-bold leading-none mt-1">' + PBUI.fmtNum(p.currentPoints) + '</p><p class="text-[11px] text-blue-100 mt-2">Rank ' + esc(rankName) + ' &middot; ' + (pointsThisMonth >= 0 ? '+' : '') + PBUI.fmtNum(pointsThisMonth) + ' poin bulan ini</p></div>' +
+          '<a href="#stats" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/15 border border-white/25 text-white text-[11px] font-bold hover:bg-white/25 transition-colors"><span class="material-symbols-outlined text-[16px]">monitoring</span>Lihat tren</a>' +
+          '</div></section>' +
+          '<section class="rounded-2xl border border-blue-100 bg-white p-4 md:p-5">' +
+          '<div class="flex items-center justify-between pb-3 border-b border-slate-100"><div><p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">Riwayat</p><h2 class="font-display text-lg font-bold mt-0.5">12 transaksi terakhir</h2></div><span class="text-[10px] font-bold text-slate-400">Pts</span></div>' +
+          '<div class="mt-3 space-y-2">' + (txRows || '<p class="text-[12px] text-slate-400 text-center py-6">Belum ada transaksi poin.</p>') + '</div>' +
+          '</section>' +
+          '</div>' +
+
+          '<div data-member-panel="profile" class="hidden space-y-4">' +
+          '<section class="rounded-2xl border border-blue-100 bg-white p-4 md:p-5 flex flex-col sm:flex-row sm:items-center gap-4">' + photo +
+          '<div class="min-w-0 flex-1"><p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">Profil anggota</p><h2 class="font-display text-xl font-bold mt-0.5 truncate">' + esc(displayName(user)) + '</h2><p class="text-[11px] text-slate-500 mt-1">' + esc(p.memberNumber || '-') + ' &middot; Rank ' + esc(rankName) + '</p></div>' +
+          '<button type="button" id="btnEdit" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl pb-btn text-[11px] font-bold"><span class="material-symbols-outlined text-[16px]">edit</span>Edit profil</button>' +
+          '</section>' +
+          '<section class="rounded-2xl border border-blue-100 bg-white p-4 md:p-5">' +
           '<p class="text-[10px] font-extrabold uppercase tracking-widest text-blue-600">Informasi</p><h2 class="font-display text-lg font-bold mt-0.5">Data akun</h2>' +
-          '<dl class="mt-4 space-y-2.5 text-[12px]">' +
+          '<dl class="mt-4 grid sm:grid-cols-2 gap-x-8 gap-y-3 text-[12px]">' +
+          info('Nama lengkap', user.fullName || '-') +
+          info('Alias', user.alias || '-') +
           info('Email', user.email || '-') +
+          info('Gender', genderLabel(user.gender)) +
           info('Telepon', p.phone || '-') +
           info('Tanggal lahir', user.birthDate ? PBUI.fmtDate(user.birthDate) : '-') +
           info('Bergabung', p.dateJoined ? PBUI.fmtDate(p.dateJoined) : '-') +
-          '</dl></section></div>' +
+          info('Poin saat ini', PBUI.fmtNum(p.currentPoints)) +
+          '</dl></section>' +
+          '<section class="rounded-2xl border border-blue-100 bg-blue-50/60 p-4 flex flex-col sm:flex-row items-center justify-between gap-3"><div><p class="text-[12px] font-bold text-blue-900">Foto profil</p><p class="text-[11px] text-blue-700 mt-0.5">Format JPG, PNG, WEBP, atau GIF. Maksimal 3 MB.</p></div><button type="button" id="btnEditPhoto" class="px-4 py-2.5 rounded-xl bg-white border border-blue-200 text-blue-700 text-[11px] font-bold hover:bg-blue-50 transition-colors">Ubah foto</button></section>' +
+          '</div>';
 
-          '<section class="mt-4 rounded-2xl border border-blue-100 bg-white p-4 flex flex-col sm:flex-row items-center justify-between gap-3">' +
-          '<div><p class="text-[12px] font-bold">Mau lihat posisi klub secara lengkap?</p><p class="text-[11px] text-slate-500 mt-0.5">Bandingkan poin dan statistikmu dengan anggota lain.</p></div>' +
-          '<a href="leaderboard.html" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl pb-btn text-[11px] font-bold"><span class="material-symbols-outlined text-[17px]">leaderboard</span>Buka ranking</a>' +
-          '</section>';
+        var tabs = document.getElementById('memberTabs');
+        if (tabs) tabs.classList.remove('hidden');
+        showMemberPanel(activeMemberPanel());
       }
 
       function info(label, value) {
@@ -280,7 +409,7 @@
       }
 
       document.addEventListener('click', function (e) {
-        if (e.target.closest('#btnEdit')) openEdit();
+        if (e.target.closest('#btnEdit') || e.target.closest('#btnEditPhoto')) openEdit();
         if (e.target.closest('#closeEdit') || e.target.closest('#cancelEdit')) closeEdit();
         if (e.target.id === 'editModal') closeEdit();
       });

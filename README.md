@@ -95,6 +95,10 @@ npx --yes serve -l 4173 .
 
 Buka <http://localhost:4173>; admin: <http://localhost:4173/admin>.
 
+Dashboard admin dan member memakai panel berbasis hash: admin
+(`#overview`, `#scores`, `#matches`, `#members`, `#ranks`, `#schedule`,
+`#events`, `#gallery`) dan member (`#overview`, `#stats`, `#points`, `#profile`).
+
 ### Akun hasil seed
 
 | Peran   | Email                     | Kata sandi      | Catatan                       |
@@ -107,7 +111,8 @@ Lima member (PB-0001…PB-0005), 2 pertandingan selesai (satu sudah dikoreksi
 untuk mendemonstrasikan reversal), 3 agenda, dan 1 foto galeri ikut di-seed.
 
 > Masuk sebagai member melalui `member-login.html`; khusus admin melalui
-> `login.html` atau langsung ke `/admin`.
+> `login.html` atau langsung ke `/admin`. Kredensial di atas juga berlaku untuk
+> akun production; reset kredensial mencabut seluruh sesi lama akun tersebut.
 
 ## Variabel environment (server/.env)
 
